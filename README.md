@@ -62,9 +62,8 @@ Ce projet a pour but de créer un jeu sur navigateur en utilisant une architectu
 
 ## Architecture du logiciel
 
-### Architecture du backend
+![image](https://github.com/user-attachments/assets/55f33aeb-f378-45dd-9864-e48cd9e8edc2)
 
-![Capture d’écran du 2025-01-27 12-14-22](https://github.com/user-attachments/assets/2bb26c44-61c1-4b06-ab75-d6e612d650c4)
 
 
 
