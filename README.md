@@ -45,3 +45,28 @@ Ce projet a pour but de créer un jeu sur navigateur en utilisant une architectu
    - Le code doit être déposé dans un repository public sur GitHub.
    - Un fichier `docker-compose` est attendu pour faciliter le déploiement.
 
+## Cas d'utilisation
+
+- Je veux créer mon compte utilisateur
+- Je veux me connecter à mon compte utilisateur
+- Je veux récupérer la liste des héros existants
+- Je veux créer un héros personnalisé et non modifiable
+- Je veux créer un nouvel héros avec mon or
+- Je veux choisir mon héros
+- Je veux rentrer dans un donjon
+- Je veux me déplacer dans le donjon selon des touches génériques
+- Je veux tuer des monstres et gagner de l'or
+- Je veux aller au donjon suivant
+- Je veux sortir du donjon
+- Je veux supprimer mon héros
+
+## Architecture du logiciel
+
+### Architecture du backend
+
+![Capture d’écran du 2025-01-27 12-14-22](https://github.com/user-attachments/assets/2bb26c44-61c1-4b06-ab75-d6e612d650c4)
+
+
+
+
+
