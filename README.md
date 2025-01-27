@@ -1,1 +1,47 @@
-# DungeonGame
+# DungeonGame : Jeu sur Navigateur avec Architecture Micro-Services
+
+## Description du Projet
+
+Ce projet a pour but de créer un jeu sur navigateur en utilisant une architecture basée sur des micro-services. Le concept principal du jeu est simple : 
+
+- L’utilisateur peut créer des héros et visualiser une liste complète des héros disponibles.
+- Après avoir choisi ou créé un héros, celui-ci peut être envoyé dans un donjon.
+- Le but du jeu est de terminer le donjon en atteignant sa destination finale.
+
+> Pour plus de détails :
+>
+> Il est possible d'accéder au cahier des charges en ce rendant au [lien](https://docs.google.com/document/d/1Eci92m6q-oKlKMv--bAx6Pk5aolsxWc57Y1MMQFHlyA/edit?tab=t.0) suivant
+> 
+### Fonctionnalités principales
+
+1. **Gestion des héros :**
+   - Création de héros avec des caractéristiques spécifiques (PV, niveau, caractéristiques de combat, inventaire, or, etc.).
+   - Liste des héros disponibles visible lors de la connexion.
+
+2. **Donjons :**
+   - Donjons générés ou prédéfinis au moment où le héros entre dedans.
+   - Donjons linéaires ou avec embranchements.
+   - Chaque case du donjon peut contenir un combat.
+
+3. **Système de combat :**
+   - Un combat se termine lorsque les PV d'un des participants atteignent 0.
+
+## Contraintes Techniques
+
+1. **Architecture Micro-Services :**
+   - Le projet doit être réalisé avec une approche micro-service.
+   - Une première étape consiste à fournir un schéma représentant l’architecture des micro-services.
+
+2. **Technologies Utilisées :**
+   - **Backend :** Spring Boot (recommandé pour sa simplicité).
+   - **Base de données :** Minimum une technologie de base de données.
+   - **File d’attente :** Minimum une technologie de file d’attente.
+
+3. **Frontend :**
+   - Peut être textuel ou visuel (aucune obligation de créer un jeu 2D ou 3D).
+   - Doit être exécutable localement pour interagir avec les services.
+
+4. **Livraison :**
+   - Le code doit être déposé dans un repository public sur GitHub.
+   - Un fichier `docker-compose` est attendu pour faciliter le déploiement.
+
