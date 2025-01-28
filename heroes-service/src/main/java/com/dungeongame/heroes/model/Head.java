@@ -20,4 +20,8 @@ public class Head {
         this.id = id;
         this.sprites = sprites;
     }
+
+    public SpriteSet getSprites() {
+        return this.sprites;
+    }
 }

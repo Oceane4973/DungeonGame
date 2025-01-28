@@ -16,4 +16,8 @@ public class Body {
 
     @OneToOne(fetch = FetchType.EAGER)
     private SpriteSet sprites;
+
+    public SpriteSet getSprites() {
+        return this.sprites;
+    }
 }

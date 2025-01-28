@@ -21,4 +21,8 @@ public class Sprite {
         this.url = url;
         this.imagePath = imagePath;
     }
+
+    public String getFilePath() {
+        return this.imagePath;
+    }
 }

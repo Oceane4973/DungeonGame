@@ -29,19 +29,12 @@ public class Hero {
     @Min(0)
     private int healthPoints;
 
-    @NotNull
-    private String imagePath;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "head_id")
-    private Head head;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "body_id")
-    private Body body;
-
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "sprite_set_id")
     private SpriteSet sprites;
+
+    public Long getId() {
+        return id;
+    }
 
 }

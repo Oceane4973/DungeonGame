@@ -1,5 +1,6 @@
 package com.dungeongame.heroes.controller;
 
+import com.dungeongame.heroes.dto.HeroDTO;
 import com.dungeongame.heroes.model.*;
 import com.dungeongame.heroes.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,14 @@ public class HeroController {
         return bodyService.getAllBodies();
     }
 
-    @GetMapping("/hero")
+    @GetMapping("/heroById")
     public Hero getHeroById(@RequestParam Long id) {
         return heroService.getHeroById(id);
     }
 
     @PostMapping("/hero")
-    public Hero createHero(@RequestBody Hero hero) {
-        return heroService.createHero(hero);
+    public Hero createHero(@RequestBody HeroDTO herodto) {
+        return heroService.createHero(herodto);
     }
 
     @DeleteMapping("/hero")
@@ -45,7 +46,7 @@ public class HeroController {
         heroService.deleteHero(id);
     }
 
-    @GetMapping
+    @GetMapping("/heroByUserId")
     public List<Hero> getAllHeroesByUserId(@RequestParam Long userId) {
         return heroService.getAllHeroesByUserId(userId);
     }

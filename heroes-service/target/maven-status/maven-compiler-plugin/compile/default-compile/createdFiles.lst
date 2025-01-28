@@ -3,6 +3,7 @@ com/dungeongame/heroes/HeroesServiceApplication.class
 com/dungeongame/heroes/repository/HeadRepository.class
 com/dungeongame/heroes/service/HeadService.class
 com/dungeongame/heroes/model/Sprite.class
+com/dungeongame/heroes/dto/HeroDTO.class
 com/dungeongame/heroes/repository/SpriteSetRepository.class
 com/dungeongame/heroes/model/Head$HeadBuilder.class
 com/dungeongame/heroes/controller/HeroController.class

@@ -1,4 +1,5 @@
 /home/oceane/Documents/cours/2A/S7/microservices/DungeonGame/heroes-service/src/main/java/com/dungeongame/heroes/repository/SpriteRepository.java
+/home/oceane/Documents/cours/2A/S7/microservices/DungeonGame/heroes-service/src/main/java/com/dungeongame/heroes/dto/HeroDTO.java
 /home/oceane/Documents/cours/2A/S7/microservices/DungeonGame/heroes-service/src/main/java/com/dungeongame/heroes/repository/SpriteSetRepository.java
 /home/oceane/Documents/cours/2A/S7/microservices/DungeonGame/heroes-service/src/main/java/com/dungeongame/heroes/repository/HeadRepository.java
 /home/oceane/Documents/cours/2A/S7/microservices/DungeonGame/heroes-service/src/main/java/com/dungeongame/heroes/model/Body.java

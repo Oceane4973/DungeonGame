@@ -83,6 +83,7 @@ public class DatabaseInitializer {
 
                 Sprite sprite = new Sprite(fileName, this.baseUrl + entityType + "/" + fileName,
                         directoryPath + "/" + fileName);
+                
                 Sprite savedSprite = spriteRepository.save(sprite);
 
                 spriteSetsByEntityId.putIfAbsent(entityId,
