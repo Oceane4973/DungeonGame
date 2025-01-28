@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+  db-users:
+    image: postgres:latest
+    hostname: dungeon-game-db-users
+    container_name: dungeon-game-db-users
+    restart: always
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: admin-users
+      POSTGRES_PASSWORD: adminUsers1234!
+    ports:
+      - '5432:5432'
+    volumes:
+      - db-users-data:/var/lib/postgresql/data
+
+volumes:
+  db-users-data:
