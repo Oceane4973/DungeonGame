@@ -2,13 +2,13 @@
 spring.application.name=users-services
 server.port={{SERVICE_PORT}}
 
-# Connexion à la base de données PostgreSQL
+# Connexion Ã  la base de donnÃ©es PostgreSQL
 spring.datasource.url=jdbc:postgresql://{{DB_HOST}}:{{DB_PORT}}/{{DB_NAME}}
 spring.datasource.username={{DB_USERNAME}}
 spring.datasource.password={{DB_PASSWORD}}
 spring.datasource.driver-class-name=org.postgresql.Driver
 
-# Hibernate (JPA) propriétés
+# Hibernate (JPA) propriÃ©tÃ©s
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.show-sql=true

@@ -47,7 +47,7 @@ public class AuthenticationController {
             // Gestion générique des erreurs pour éviter les crashs
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred during user registration.");
+                    .body("An error occurred during user registration");
         }
     }
 
