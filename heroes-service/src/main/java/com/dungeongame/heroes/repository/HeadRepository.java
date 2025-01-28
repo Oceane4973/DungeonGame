@@ -8,10 +8,4 @@ import org.springframework.data.jpa.repository.Query;
 import com.dungeongame.heroes.model.Head;
 
 @Repository
-public interface HeadRepository extends JpaRepository<Head, Long> {
-    @Query("SELECT new com.dungeongame.heroes.model.Head(h.id, s.id, s.front, s.back) " +
-            "FROM Head h " +
-            "LEFT JOIN h.sprites s")
-    List<Head> findAllWithSprites();
-
-}
+public interface HeadRepository extends JpaRepository<Head, Long> {}

@@ -6,7 +6,6 @@ import lombok.*;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class Head {
 
@@ -14,7 +13,11 @@ public class Head {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private SpriteSet sprites;
 
+    public Head(Long id, SpriteSet sprites) {
+        this.id = id;
+        this.sprites = sprites;
+    }
 }

@@ -14,19 +14,19 @@ public class SpriteSet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "sprite_set_front", joinColumns = @JoinColumn(name = "sprite_set_id"), inverseJoinColumns = @JoinColumn(name = "sprite_id"))
     private List<Sprite> front;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "sprite_set_back", joinColumns = @JoinColumn(name = "sprite_set_id"), inverseJoinColumns = @JoinColumn(name = "sprite_id"))
     private List<Sprite> back;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "sprite_set_left", joinColumns = @JoinColumn(name = "sprite_set_id"), inverseJoinColumns = @JoinColumn(name = "sprite_id"))
     private List<Sprite> left;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "sprite_set_right", joinColumns = @JoinColumn(name = "sprite_set_id"), inverseJoinColumns = @JoinColumn(name = "sprite_id"))
     private List<Sprite> right;
 

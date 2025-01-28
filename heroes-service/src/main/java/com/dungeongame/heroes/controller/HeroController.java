@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/heroes")
+@RequestMapping("/api/heroes")
 public class HeroController {
 
     @Autowired
@@ -20,7 +20,7 @@ public class HeroController {
     @Autowired
     private BodyService bodyService;
 
-    @GetMapping("/head")
+    @GetMapping("/heads")
     public List<Head> getAllHeads() {
         return headService.getAllHeads();
     }

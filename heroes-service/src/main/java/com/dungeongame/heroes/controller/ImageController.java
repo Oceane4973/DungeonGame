@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 //http://localhost:8081/images/<type>/<nom_du_fichier>
 
 @RestController
-@RequestMapping("/images")
+@RequestMapping("/api/images")
 public class ImageController {
 
     @Value("${app.images.head-dir}")
