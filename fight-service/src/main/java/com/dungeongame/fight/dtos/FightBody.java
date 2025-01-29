@@ -9,7 +9,7 @@ public class FightBody {
     private int heroAttack;
     private int heroLevel;
 
-    private Long userId;
+    private String username;
 
     public int getMonsterHealth() {
         return monsterHealth;
@@ -43,7 +43,7 @@ public class FightBody {
         return heroAttack;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 }

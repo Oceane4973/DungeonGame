@@ -16,8 +16,8 @@ public class Receiver {
     public void receive(QueueGold in) throws InterruptedException {
         StopWatch watch = new StopWatch();
         watch.start();
-        System.out.println("[x] Received " + in.getGold() + " for user " + in.getUserId());
+        System.out.println("[x] Received " + in.getGold() + " for user " + in.getUsername());
 
-        userService.updateGold(in);
+        userService.updateQueueGold(in);
     }
 }

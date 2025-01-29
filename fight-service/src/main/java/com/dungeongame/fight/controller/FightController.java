@@ -30,7 +30,7 @@ public class FightController {
             if (Objects.equals(response.getWinner(), "hero")) {
                 QueueGold queueGold = new QueueGold();
                 queueGold.setGold(5);
-                queueGold.setUserId(fight.getUserId());
+                queueGold.setUsername(fight.getUsername());
 
                 sender.sendGold(queueGold);
             }
