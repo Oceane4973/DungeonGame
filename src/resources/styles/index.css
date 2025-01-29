@@ -1,0 +1,56 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body{
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*background-color: #72751B;*/
+    background: url("../assets/treee.png") repeat;
+    background-size: 2.95%;
+    background-position-x: 18px;
+}
+
+#un{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+#un span{
+    font-size: 200%;
+}
+
+#un div{
+    display: flex;
+}
+
+button{
+    color: white;
+    padding: 15px 30px;
+    width: 175px;
+    font-size: 150%;
+    border: 1px solid white;
+    background-color: transparent;
+    border-radius: 3px;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+canvas{
+    border-radius: 5px;
+}

@@ -1,0 +1,75 @@
+.header, .footer {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 1rem 2rem;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    z-index: 100;
+}
+
+.header {
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 1rem 2rem;
+}
+
+.footer {
+    bottom: 0;
+    text-align: center;
+    font-size: 0.9rem;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer p {
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    background-color: rgba(255, 255, 255, 0.1);
+    white-space: nowrap;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Ajout du conteneur pour le gold */
+.gold-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #FFD700;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.gold-icon {
+    font-size: 24px;
+}
