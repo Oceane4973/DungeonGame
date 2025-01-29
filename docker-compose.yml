@@ -20,10 +20,34 @@ services:
       context: ./users-service
       dockerfile: Dockerfile
     container_name: dungeon-game-service-users
+    environment:  
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-users:5432/users
+      - SPRING_DATASOURCE_USERNAME=admin-users
+      - SPRING_DATASOURCE_PASSWORD=adminUsers1234!
+      - SECURITY_JWT_SECRET_KEY=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      - SECURITY_JWT_EXPIRATION_TIME=86400000
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
     ports:
       - '8081:8080'
     depends_on:
       - db-users
+      - rabbitmq
+    networks:
+      - dungeon-game
+
+  fight-service:
+    build:
+      context: ./fight-service
+      dockerfile: Dockerfile
+    container_name: dungeon-game-service-fight
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+    ports:
+      - '8082:8080'
+    depends_on:
+      - rabbitmq
     networks:
       - dungeon-game
 
