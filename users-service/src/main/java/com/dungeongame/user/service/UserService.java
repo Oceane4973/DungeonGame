@@ -10,9 +10,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public void updateGold(QueueGold queueGold) {
+    public void updateQueueGold(QueueGold queueGold) {
         userRepository.findUserByUsername(queueGold.getUsername()).ifPresent(user -> {
-            user.setGold(queueGold.getGold());
+            user.setGold(user.getGold() + queueGold.getGold());
 
             userRepository.save(user);
         });

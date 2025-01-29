@@ -1,6 +1,8 @@
 package com.dungeongame.user.dtos;
 
-public class QueueGold {
+import java.io.Serializable;
+
+public class QueueGold implements Serializable {
     String username;
 
     int gold;
