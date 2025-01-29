@@ -1,6 +1,6 @@
 package com.dungeongame.user.dtos;
 
-public class RegisterUserDto {
+public class LoginUser {
     private String username;
 
     private String password;

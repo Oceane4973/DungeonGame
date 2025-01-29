@@ -1,39 +1,31 @@
 package com.dungeongame.user.controller;
 
 import com.dungeongame.user.dtos.LoginResponse;
-import com.dungeongame.user.dtos.LoginUserDto;
-import com.dungeongame.user.dtos.RegisterUserDto;
+import com.dungeongame.user.dtos.LoginUser;
+import com.dungeongame.user.dtos.RegisterUser;
 import com.dungeongame.user.model.User;
 import com.dungeongame.user.repository.UserRepository;
 import com.dungeongame.user.service.AuthenticationService;
 import com.dungeongame.user.service.JwtService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.AuthenticationException;
-
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
-    private final JwtService jwtService;
+    @Autowired
+    private JwtService jwtService;
 
-    private final AuthenticationService authenticationService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
-    private final UserRepository userRepository;
-
-    public AuthenticationController(
-            JwtService jwtService,
-            AuthenticationService authenticationService,
-            UserRepository userRepository
-    ) {
-        this.jwtService = jwtService;
-        this.authenticationService = authenticationService;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> register(@RequestBody RegisterUserDto registerUserDto) {
+    public ResponseEntity<?> register(@RequestBody RegisterUser registerUserDto) {
         if (userRepository.findUserByUsername(registerUserDto.getUsername()).isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -52,7 +44,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<?> authenticate(@RequestBody LoginUser loginUserDto) {
         try {
             User authenticatedUser = authenticationService.authenticate(loginUserDto);
 

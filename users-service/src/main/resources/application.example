@@ -1,6 +1,5 @@
 # Configuration du service
 spring.application.name=users-services
-server.port={{SERVICE_PORT}}
 
 # Connexion à la base de données PostgreSQL
 spring.datasource.url=jdbc:postgresql://{{DB_HOST}}:{{DB_PORT}}/{{DB_NAME}}
