@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "jest": "^29.7.0",
-    "nightwatch": "^3.11.0"
+    "nightwatch": "^3.11.0",
+    "axios": "^1.6.7"
   }
 }
