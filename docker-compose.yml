@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  dungeon-game-frontend-service:
+    image: nginx:alpine
+    container_name: dungeon-game-frontend-service
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend-service:/usr/share/nginx/html
+      - ./docker-conf/frontend-service/nginx.conf:/etc/nginx/conf.d/default.conf
