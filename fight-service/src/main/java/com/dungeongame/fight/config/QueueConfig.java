@@ -16,6 +16,11 @@ public class QueueConfig {
     }
 
     @Bean
+    public Queue healthHeroQueue() {
+        return new Queue("health-hero");
+    }
+
+    @Bean
     public Sender sender() {
         return new Sender();
     }

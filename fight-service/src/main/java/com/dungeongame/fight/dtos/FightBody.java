@@ -10,6 +10,7 @@ public class FightBody {
     private int heroAttack;
     private int heroLevel;
 
+    private Long heroId;
     private String username;
 
     public Integer getHeroId(){
@@ -50,5 +51,9 @@ public class FightBody {
 
     public String getUsername() {
         return username;
+    }
+
+    public Long getHeroId() {
+        return heroId;
     }
 }

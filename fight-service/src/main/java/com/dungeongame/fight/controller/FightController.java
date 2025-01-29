@@ -3,7 +3,7 @@ package com.dungeongame.fight.controller;
 import com.dungeongame.fight.dtos.FightBody;
 import com.dungeongame.fight.dtos.FightResponse;
 import com.dungeongame.fight.dtos.QueueGold;
-import com.dungeongame.fight.dtos.QueueHero;
+import com.dungeongame.fight.dtos.QueueHealthHero;
 import com.dungeongame.fight.queue.Sender;
 import com.dungeongame.fight.service.FightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +37,11 @@ public class FightController {
                 sender.sendGold(queueGold);
             }
 
-            QueueHero queueHero = new QueueHero();
-            queueHero.setHealth(response.getHeroHealth());
-            queueHero.setId(fight.getHeroId());
-            sender.sendHealth(queueHero);
+            QueueHealthHero queueHealthHero = new QueueHealthHero();
+            queueHealthHero.setHeroId(fight.getHeroId());
+            queueHealthHero.setHeroHealth(fight.getHeroHealth());
+
+            sender.updateHealth(queueHealthHero);
 
             return ResponseEntity.ok(fightService.fight(fight));
         } catch (Exception e) {

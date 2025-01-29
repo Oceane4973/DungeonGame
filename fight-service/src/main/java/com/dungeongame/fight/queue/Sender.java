@@ -1,8 +1,7 @@
 package com.dungeongame.fight.queue;
 
 import com.dungeongame.fight.dtos.QueueGold;
-import com.dungeongame.fight.dtos.QueueHero;
-
+import com.dungeongame.fight.dtos.QueueHealthHero;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +23,8 @@ public class Sender {
         return " [x] Sent " + queueGold.getGold() + " gold to user " + queueGold.getUsername();
     }
 
-    public String sendHealth(QueueHero queueHero) {
-        rabbitTemplate.convertAndSend(healthHeroQueue.getName(), queueHero);
-        return " [x] Sent " + queueHero.getHealth() + " gold to user " + queueHero.getId();
+    public String updateHealth(QueueHealthHero queueHealthHero) {
+        rabbitTemplate.convertAndSend(healthHeroQueue.getName(), queueHealthHero);
+        return " [x] Sent " + queueHealthHero.getHeroHealth() + " health to hero " + queueHealthHero.getHeroId();
     }
-
-
 }
