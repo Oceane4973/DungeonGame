@@ -25,6 +25,17 @@ services:
     networks:
       - dungeon-game
 
+  dungeon-game-dungeon-service:
+    image: node:23-bullseye
+    container_name: dungeon-game-dungeon-service
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./dungeons-service:/app
+    working_dir: /app
+    command: sh -c "npm install && npm run start"
+    restart: always
+
 volumes:
   db-heroes-data:
 
