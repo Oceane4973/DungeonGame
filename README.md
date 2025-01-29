@@ -65,7 +65,8 @@ Ce projet a pour but de créer un jeu sur navigateur en utilisant une architectu
 ![image](https://github.com/user-attachments/assets/55f33aeb-f378-45dd-9864-e48cd9e8edc2)
 
 
+## Démarrage du projet
 
-
-
-
+Pour démarrer le projet, suivre ces étapes :
+- Configurer les différents services en suivant les étapes définis dans le README
+- Démarrer les conteneurs avec la commande `docker compose up -d`

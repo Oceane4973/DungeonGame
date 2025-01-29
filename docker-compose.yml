@@ -1,0 +1,76 @@
+version: '3.3'
+services:
+  db-users:
+    image: postgres:latest
+    container_name: dungeon-game-db-users
+    restart: always
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: admin-users
+      POSTGRES_PASSWORD: adminUsers1234!
+    ports:
+      - '5432:5432'
+    volumes:
+      - db-users-data:/var/lib/postgresql/data
+    networks:
+      - dungeon-game
+
+  dungeon-game-service-users:
+    build:
+      context: ./users-service
+    container_name: dungeon-game-service-users
+    environment:  
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-users:5432/users
+      - SPRING_DATASOURCE_USERNAME=admin-users
+      - SPRING_DATASOURCE_PASSWORD=adminUsers1234!
+      - SECURITY_JWT_SECRET_KEY=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      - SECURITY_JWT_EXPIRATION_TIME=86400000
+      - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    restart: always
+    ports:
+      - '8081:8080'
+    depends_on:
+      - dungeon-game-rabbitmq
+      - db-users
+    networks:
+      - dungeon-game
+
+  dungeon-game-service-fight:
+    build:
+      context: ./fight-service
+    restart: always
+    container_name: dungeon-game-service-fight
+    environment:  
+      - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    ports:
+      - '8082:8080'
+    depends_on:
+      - dungeon-game-rabbitmq
+    networks:
+      - dungeon-game
+
+  dungeon-game-rabbitmq:
+    image: rabbitmq:3.9-management
+    restart: always
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq/
+    networks:
+      - dungeon-game
+
+volumes:
+  db-users-data:
+  rabbitmq_data:
+  rabbitmq_log:
+
+networks:
+  dungeon-game:
