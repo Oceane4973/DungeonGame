@@ -1,4 +1,263 @@
-# Heroes service 
+# Heroes service - API Documentation
+
+## Introduction
+Cette API permet de gérer les héros (`Hero`), leurs composants (`Head`, `Body`) et leurs sprites (`SpriteSet`).  
+Elle fournit également des endpoints pour récupérer des images associées.
+
+## Routes API
+
+### Héros (`/api/heroes`)
+
+### 🔹 Récupérer tous les **Heads**
+```http
+GET /api/heroes/heads
+```
+**Description** : Récupère la liste de toutes les têtes (`Head`) disponibles.
+
+**Paramètres** : Aucun  
+**Réponse** (JSON) :
+```json
+[
+    {
+        "id": 1,
+        "sprites": { 
+            "id": 10, 
+            "front": [...], 
+            "back": [...], 
+            "left": [...], 
+            "right": [...] 
+        }
+    }
+]
+```
+
+---
+
+### 🔹 Récupérer tous les **Bodies**
+```http
+GET /api/heroes/bodies
+```
+**Description** : Récupère la liste de tous les corps (`Body`) disponibles.
+
+**Paramètres** : Aucun  
+**Réponse** (JSON) :
+```json
+[
+    {
+        "id": 1,
+        "sprites": { 
+            "id": 15, 
+            "front": [...], 
+            "back": [...], 
+            "left": [...], 
+            "right": [...]
+        }
+    }
+]
+```
+
+---
+
+### 🔹 Récupérer un héros par **ID**
+```http
+GET /api/heroes/heroById?id={heroId}
+```
+**Description** : Récupère les informations d'un héros spécifique par son **ID**.
+
+ **Paramètres** :  
+| Nom      | Type   | Requis | Description |
+|----------|--------|--------|-------------|
+| `id`     | `Long` | ✅     | ID du héros |
+
+**Réponse** (JSON) :
+```json
+{
+    "id": 1,
+    "userId": 2,
+    "name": "HeroName",
+    "level": 10,
+    "attack": 50,
+    "healthPoints": 100,
+    "sprites": { 
+        "id": 25, 
+        "front": [...], 
+        "back": [...], 
+        "left": [...], 
+        "right": [...]
+    }
+}
+```
+
+---
+
+### 🔹 Créer un nouveau héros
+```http
+POST /api/heroes/hero
+```
+**Description** : Crée un héros avec les informations fournies.
+
+ **Corps de la requête** (JSON) :
+```json
+{
+    "userId": 1,
+    "name": "HeroName",
+    "level": 10,
+    "attack": 50,
+    "healthPoints": 100,
+    "headId": 1,
+    "bodyId": 1
+}
+```
+**Réponse** (JSON) :
+```json
+{
+    "id": 5,
+    "userId": 1,
+    "name": "HeroName",
+    "level": 10,
+    "attack": 50,
+    "healthPoints": 100,
+    "sprites": { 
+        "id": 30, 
+        "front": [...], 
+        "back": [...], 
+        "left": [...], 
+        "right": [...]
+    }
+}
+```
+
+---
+
+### 🔹 Supprimer un héros par **ID**
+```http
+DELETE /api/heroes/hero?id={heroId}
+```
+**Description** : Supprime un héros de la base de données.
+
+ **Paramètres** :
+| Nom   | Type   | Requis | Description  |
+|-------|--------|--------|--------------|
+| `id`  | `Long` | ✅     | ID du héros à supprimer |
+
+**Réponse** : Code `204 No Content` en cas de succès.
+
+---
+
+### 🔹 Récupérer tous les héros d'un utilisateur
+```http
+GET /api/heroes/heroByUserId?userId={userId}
+```
+**Description** : Récupère tous les héros appartenant à un utilisateur spécifique.
+
+ **Paramètres** :
+| Nom      | Type   | Requis | Description |
+|----------|--------|--------|-------------|
+| `userId` | `Long` | ✅     | ID de l'utilisateur |
+
+**Réponse** (JSON) :
+```json
+[
+    {
+        "id": 1,
+        "userId": 1,
+        "name": "Hero1",
+        "level": 5,
+        "attack": 20,
+        "healthPoints": 80,
+        "sprites": { 
+            "id": 21, 
+            "front": [...], 
+            "back": [...], 
+            "left": [...], 
+            "right": [...]
+        }
+    },
+    {
+        "id": 2,
+        "userId": 1,
+        "name": "Hero2",
+        "level": 8,
+        "attack": 35,
+        "healthPoints": 120,
+        "sprites": { 
+            "id": 22, 
+            "front": [...], 
+            "back": [...], 
+            "left": [...], 
+            "right": [...]
+        }
+    }
+]
+```
+
+---
+
+### Images (`/api/images`)
+
+### 🔹 Récupérer une image spécifique
+```http
+GET /api/images/{type}/{fileName}
+```
+**Description** : Récupère une image spécifique stockée sur le serveur.
+
+ **Paramètres** :
+| Nom       | Type   | Requis | Description                           |
+|-----------|--------|--------|---------------------------------------|
+| `type`    | `String` | ✅   | Type d'image (`head`, `body`, `hero`) |
+| `fileName` | `String` | ✅  | Nom du fichier image                 |
+
+**Réponse** : Fichier image correspondant.
+
+**Exemple d'utilisation** :
+```http
+GET /api/images/hero/hero1-front-1-32x36.png
+```
+
+**Réponse** :
+- `200 OK` : Image affichée.
+- `404 Not Found` : L'image n'existe pas.
+- `500 Internal Server Error` : Problème de serveur.
+
+---
+
+## Environnements et Configurations
+
+L'API utilise les variables de configuration suivantes :
+| Variable                     | Description                                | Exemple                        |
+|------------------------------|--------------------------------------------|--------------------------------|
+| `app.images.hero-dir`        | Dossier contenant les sprites des héros    | `/path/to/hero/sprites/`       |
+| `app.images.head-dir`        | Dossier contenant les sprites des têtes    | `/path/to/head/sprites/`       |
+| `app.images.body-dir`        | Dossier contenant les sprites des corps    | `/path/to/body/sprites/`       |
+
+---
+
+## Exemples de Requêtes `curl`
+
+### 🔹 Créer un héros
+```bash
+curl -X POST "http://localhost:8081/api/heroes/hero" \
+-H "Content-Type: application/json" \
+-d '{
+    "userId": 1,
+    "name": "HeroName",
+    "level": 10,
+    "attack": 50,
+    "healthPoints": 100,
+    "headId": 1,
+    "bodyId": 1
+}'
+```
+
+### 🔹 Supprimer un héros
+```bash
+curl -X DELETE "http://localhost:8081/api/heroes/hero?id=1"
+```
+
+### 🔹 Récupérer une image
+```bash
+curl -X GET "http://localhost:8081/api/images/hero/hero1-front-1-32x36.png"
+```
 
 ## Configuration de PostgreSQL
 
@@ -88,3 +347,11 @@ mvn spring-boot:run
 
 Si tout est bien configuré, Spring Boot se connectera automatiquement à votre base de données, et les entités (comme Head, Hero, etc.) seront mappées en tables dans la base.
 
+## Configuration Docker
+
+Pour démarrer les conteneurs Docker associés à ce projet, suivre ces étapes :
+- Se positionner dans le dossier racine
+- Démarrer les conteneurs avec la commande `docker compose up -d --build`
+- Vérifier que les conteneurs sont fonctionnels
+  - Lister les conteneurs avec la commande `docker ps`
+  - Se rendre sur `http://localhost` et vérifier que la page d'accueil s'affiche

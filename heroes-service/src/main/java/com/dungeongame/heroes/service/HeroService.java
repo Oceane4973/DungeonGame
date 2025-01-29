@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.dungeongame.heroes.dto.HeroDTO;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
+import com.dungeongame.heroes.provider.ServerInfoProvider;
 import jakarta.persistence.PersistenceContext;
 
 import javax.imageio.ImageIO;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 
 @Service
 public class HeroService {
+
+    private final ServerInfoProvider serverInfoProvider;
 
     @Autowired
     private HeroRepository heroRepository;
@@ -39,8 +42,9 @@ public class HeroService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Value("${app.images.api-url}")
-    private String baseUrl;
+    public HeroService(ServerInfoProvider serverInfoProvider) { // ✅ Correct
+        this.serverInfoProvider = serverInfoProvider;
+    }
 
     @Value("${app.images.hero-dir}")
     private String heroDir;
@@ -103,6 +107,8 @@ public class HeroService {
                     "Mismatch in sprite counts for head and body for direction: " + direction);
         }
 
+        String baseUrl = serverInfoProvider.getServerUrl();
+
         for (int i = 0; i < headSprites.size(); i++) {
             Sprite headSprite = headSprites.get(i);
             Sprite bodySprite = bodySprites.get(i);
@@ -124,7 +130,7 @@ public class HeroService {
                 File outputFile = new File(outputFilePath);
                 ImageIO.write(combinedImage, "png", outputFile);
 
-                Sprite newSprite = new Sprite(fileName, this.baseUrl + "hero/" + fileName,
+                Sprite newSprite = new Sprite(fileName, baseUrl + "/hero/" + fileName,
                         outputFile.getAbsolutePath());
                 spriteRepository.save(newSprite);
 
