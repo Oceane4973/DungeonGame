@@ -108,8 +108,7 @@ class UserService {
             const response = await fetch('http://localhost:8081/api/users/me', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Authorization': `Bearer ${token}`
                 },
                 mode: 'cors'
             });
@@ -118,8 +117,7 @@ class UserService {
                 throw new Error('Erreur lors de la récupération des détails utilisateur');
             }
 
-            const data = await response.json();
-            return data;
+            return await response.json();
         } catch (error) {
             console.error('Erreur getUserDetails:', error);
             throw error;
