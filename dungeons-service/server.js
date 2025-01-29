@@ -1,11 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
 
 const app = express();
-const PORT = process.env.API_PORT || 3000;
-const API_URL = process.env.API_URL || "http://localhost";
 
+const API_PORT = 3000;
+const API_URL = `http://localhost`;
+
+console.log(API_PORT, API_URL)
 app.use(express.json());
 
 app.use(cors({
@@ -17,9 +18,9 @@ app.use(cors({
 const dungeonRoutes = require('./routes/dungeon.js');
 const imagesRoutes = require('./routes/images.js');
 
-app.use('/api/dungeons', dungeonRoutes);
+app.use('/api/dungeon', dungeonRoutes);
 app.use('/api/images', imagesRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Serveur started on ${API_URL}:${PORT}`);
+app.listen(API_PORT, () => {
+    console.log(`Serveur started on ${API_URL}:${API_PORT}`);
 });

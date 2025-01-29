@@ -1,7 +1,6 @@
-require('dotenv').config(); // Charger .env
 
-const API_URL = process.env.API_URL || "http://localhost";
-const API_PORT = process.env.API_PORT || 3000;
+const API_PORT = process.env.SERVICE_DUNGEON_PORT || 3000;
+const API_URL = `http://${process.env.SERVICE_DUNGEON_HOST || "localhost" }`;
 
 const BASE_URL = `${API_URL}:${API_PORT}/api/images/cells`;
 

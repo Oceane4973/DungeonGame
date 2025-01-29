@@ -324,7 +324,7 @@ Ajoutez la configuration de connexion dans votre fichier `src/main/java/resource
 
 Exemple de fichier application.properties :
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/dungeon_game_heroes
+spring.datasource.url=jdbc:postgresql://localhost:5433/dungeon_game_heroes
 spring.datasource.username=dungeon_user
 spring.datasource.password=password
 spring.datasource.driver-class-name=org.postgresql.Driver

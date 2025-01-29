@@ -5,13 +5,28 @@ services:
     container_name: dungeon-game-db-users
     restart: always
     environment:
-      POSTGRES_DB: users
-      POSTGRES_USER: admin-users
-      POSTGRES_PASSWORD: adminUsers1234!
+      POSTGRES_DB: ${DB_USER_POSTGRES_DB}
+      POSTGRES_USER: ${DB_USER_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DB_USER_POSTGRES_PASSWORD}
     ports:
-      - '5432:5432'
+      - '${DB_USER_PORT}:5432'
     volumes:
       - db-users-data:/var/lib/postgresql/data
+    networks:
+      - dungeon-game
+
+  db-heroes:
+    image: postgres:latest
+    container_name: dungeon-game-db-heroes
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_HEROES_POSTGRES_DB}
+      POSTGRES_USER: ${DB_HEROES_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DB_HEROES_POSTGRES_PASSWORD}
+    ports:
+      - '${DB_HEROES_PORT}:5432'
+    volumes:
+      - db-heroes-data:/var/lib/postgresql/data
     networks:
       - dungeon-game
 
@@ -20,18 +35,18 @@ services:
       context: ./users-service
     container_name: dungeon-game-service-users
     environment:  
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-users:5432/users
-      - SPRING_DATASOURCE_USERNAME=admin-users
-      - SPRING_DATASOURCE_PASSWORD=adminUsers1234!
-      - SECURITY_JWT_SECRET_KEY=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-      - SECURITY_JWT_EXPIRATION_TIME=86400000
+      - SPRING_DATASOURCE_URL=${SERVICE_USERS_SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SERVICE_USERS_SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SERVICE_USERS_SPRING_DATASOURCE_PASSWORD}
+      - SECURITY_JWT_SECRET_KEY=${SERVICE_USERS_SECURITY_JWT_SECRET_KEY}
+      - SECURITY_JWT_EXPIRATION_TIME=${SERVICE_USERS_SECURITY_JWT_EXPIRATION_TIME}
       - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_PORT=${SPRING_RABBITMQ_SEND_PORT}
+      - SPRING_RABBITMQ_USERNAME=${SPRING_RABBITMQ_USERNAME}
+      - SPRING_RABBITMQ_PASSWORD=${SPRING_RABBITMQ_PASSWORD}
     restart: always
     ports:
-      - '8081:8080'
+      - '${SERVICE_USERS_PORT}:8080'
     depends_on:
       - dungeon-game-rabbitmq
       - db-users
@@ -45,22 +60,51 @@ services:
     container_name: dungeon-game-service-fight
     environment:  
       - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq
-      - SPRING_RABBITMQ_PORT=5672
-      - SPRING_RABBITMQ_USERNAME=guest
-      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_RABBITMQ_PORT=${SPRING_RABBITMQ_SEND_PORT}
+      - SPRING_RABBITMQ_USERNAME=${SPRING_RABBITMQ_USERNAME}
+      - SPRING_RABBITMQ_PASSWORD=${SPRING_RABBITMQ_PASSWORD}
     ports:
-      - '8082:8080'
+      - '${SERVICE_FIGHT_PORT}:8080'
     depends_on:
       - dungeon-game-rabbitmq
     networks:
       - dungeon-game
 
+  dungeon-game-heroes-service:
+    build:
+      context: ./heroes-service
+    container_name: dungeon-game-heroes-service
+    environment:  
+      - SPRING_DATASOURCE_URL=${SERVICE_HEROES_SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SERVICE_HEROES_SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SERVICE_HEROES_SPRING_DATASOURCE_PASSWORD}
+    ports:
+      - "${SERVICE_HEROES_PORT}:8080"
+    depends_on:
+      - db-heroes
+    networks:
+      - dungeon-game
+
+  dungeon-game-dungeon-service:
+    image: node:23-bullseye
+    container_name: dungeon-game-dungeon-service
+    environment:  
+      - SERVICE_DUNGEON_PORT=${SERVICE_DUNGEON_PORT}
+      - SERVICE_DUNGEON_HOST=${SERVICE_DUNGEON_HOST}
+    ports:
+      - "${SERVICE_DUNGEON_PORT}:3000"
+    volumes:
+      - ./dungeons-service:/app
+    working_dir: /app
+    command: sh -c "npm install && npm run start"
+    restart: always
+    
   dungeon-game-rabbitmq:
     image: rabbitmq:3.9-management
     restart: always
     ports:
-      - '5672:5672'
-      - '15672:15672'
+      - '${SPRING_RABBITMQ_SEND_PORT}:5672'
+      - '${SPRING_RABBITMQ_VIEW_PORT}:15672'
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq/
       - rabbitmq_log:/var/log/rabbitmq/
@@ -69,6 +113,7 @@ services:
 
 volumes:
   db-users-data:
+  db-heroes-data:
   rabbitmq_data:
   rabbitmq_log:
 
