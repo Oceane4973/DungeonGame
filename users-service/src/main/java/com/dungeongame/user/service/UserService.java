@@ -11,7 +11,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public void updateGold(QueueGold queueGold) {
-        userRepository.findById(queueGold.getUserId()).ifPresent(user -> {
+        userRepository.findUserByUsername(queueGold.getUsername()).ifPresent(user -> {
             user.setGold(queueGold.getGold());
 
             userRepository.save(user);
