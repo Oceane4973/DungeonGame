@@ -2,7 +2,6 @@ version: '3.3'
 services:
   db-users:
     image: postgres:latest
-    hostname: dungeon-game-db-users
     container_name: dungeon-game-db-users
     restart: always
     environment:
@@ -13,6 +12,36 @@ services:
       - '5432:5432'
     volumes:
       - db-users-data:/var/lib/postgresql/data
+    networks:
+      - dungeon-game
+
+  dungeon-game-service-users:
+    build:
+      context: ./users-service
+      dockerfile: Dockerfile
+    container_name: dungeon-game-service-users
+    ports:
+      - '8081:8080'
+    depends_on:
+      - db-users
+    networks:
+      - dungeon-game
+
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq/
+    networks:
+      - dungeon-game
 
 volumes:
   db-users-data:
+  rabbitmq_data:
+  rabbitmq_log:
+
+networks:
+  dungeon-game:
