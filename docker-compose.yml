@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 services:
   db-users:
     image: postgres:latest
@@ -91,6 +91,10 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${SERVICE_HEROES_SPRING_DATASOURCE_PASSWORD}
       - SERVICE_HEROES_PORT=${SERVICE_HEROES_PORT}
       - SERVICE_HEROES_HOST=${SERVICE_HOST}
+      - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq
+      - SPRING_RABBITMQ_PORT=${SPRING_RABBITMQ_SEND_PORT}
+      - SPRING_RABBITMQ_USERNAME=${SPRING_RABBITMQ_USERNAME}
+      - SPRING_RABBITMQ_PASSWORD=${SPRING_RABBITMQ_PASSWORD}
     ports:
       - "${SERVICE_HEROES_PORT}:8080"
     depends_on:

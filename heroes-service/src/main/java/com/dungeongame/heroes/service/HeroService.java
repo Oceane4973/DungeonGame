@@ -1,5 +1,6 @@
 package com.dungeongame.heroes.service;
 
+import com.dungeongame.heroes.dto.QueueHealthHero;
 import com.dungeongame.heroes.model.*;
 import com.dungeongame.heroes.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,5 +143,12 @@ public class HeroService {
                 throw new RuntimeException("Error processing sprite", e);
             }
         }
+    }
+
+    public void updateHealthHero(QueueHealthHero queueHealthHero) {
+        heroRepository.findById(queueHealthHero.getHeroId()).ifPresent(hero -> {
+            hero.setHealthPoints(queueHealthHero.getHeroHealth());
+            heroRepository.save(hero);
+        });
     }
 }

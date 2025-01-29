@@ -1,10 +1,10 @@
-package com.dungeongame.fight.dtos;
+package com.dungeongame.heroes.dto;
 
 import java.io.Serializable;
 
 public class QueueHealthHero implements Serializable {
     private Long heroId;
-    
+
     private int heroHealth;
 
     public Long getHeroId() {
