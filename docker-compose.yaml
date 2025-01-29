@@ -1,0 +1,32 @@
+version: '3.3'
+services:
+  db-heroes:
+    image: postgres:latest
+    container_name: dungeon-game-db-heroes
+    restart: always
+    environment:
+      POSTGRES_DB: dungeon_game_heroes
+      POSTGRES_USER: dungeon_user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-heroes-data:/var/lib/postgresql/data
+    networks:
+      - dungeon-game
+
+  dungeon-game-heroes-service:
+    container_name: dungeon-game-heroes-service
+    build:
+      context: ./heroes-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db-heroes
+    networks:
+      - dungeon-game
+
+volumes:
+  db-heroes-data:
+
+networks:
+  dungeon-game:
