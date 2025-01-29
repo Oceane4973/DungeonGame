@@ -1,49 +1,56 @@
 import ImageData from './ImageData.js';
 
 export default class ImageLoader {
-
-    static instance = new ImageLoader()
+    static instance = null;
 
     constructor() {
-        this.images = {};
+        if (ImageLoader.instance) {
+            return ImageLoader.instance;
+        }
         ImageLoader.instance = this;
+        this.images = {};
     }
 
     async loadImages() {
         try {
-            // Charger l'image de fond
-            const backgroundImage = new Image();
-            backgroundImage.src = './src/resources/assets/background.png';
-            await new Promise((resolve, reject) => {
-                backgroundImage.onload = resolve;
-                backgroundImage.onerror = reject;
-            });
-            this.images.BACKGROUND = {
-                image: backgroundImage
+            const imagesToLoad = {
+                BACKGROUND: '/src/resources/images/background.png',
+                // WALL: '/src/resources/images/wall.png',
+                // FLOOR: '/src/resources/images/floor.png',
+                // DOOR: '/src/resources/images/door.png',
+                // PLAYER: '/src/resources/images/player.png'
             };
 
-            const mapSprite = new Image();
-            mapSprite.src = './src/resources/assets/map.png';
-            
-            await new Promise((resolve, reject) => {
-                mapSprite.onload = () => {
-                    this.images.MAP = {
-                        image: mapSprite,
-                        tileSize: 16
+            const loadPromises = Object.entries(imagesToLoad).map(([key, path]) => {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        this.images[key] = {
+                            image: img,
+                            loaded: true
+                        };
+                        resolve();
                     };
-                    console.log('Map tileset loaded successfully');
-                    resolve();
-                };
-                mapSprite.onerror = (e) => {
-                    console.error('Error loading map tileset:', e);
-                    reject(e);
-                };
+                    img.onerror = () => {
+                        console.error(`Failed to load image: ${path}`);
+                        reject(new Error(`Failed to load image: ${path}`));
+                    };
+                    img.src = path;
+                });
             });
 
-            return true;
+            await Promise.all(loadPromises);
+            console.log('All images loaded successfully');
         } catch (error) {
             console.error('Error loading images:', error);
             throw error;
         }
+    }
+
+    static getInstance() {
+        if (!ImageLoader.instance) {
+            ImageLoader.instance = new ImageLoader();
+        }
+        return ImageLoader.instance;
     }
 }

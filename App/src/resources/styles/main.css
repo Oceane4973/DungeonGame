@@ -73,3 +73,22 @@
 .gold-icon {
     font-size: 24px;
 }
+
+/* Add these styles to main.css */
+body {
+    min-height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: #2c2c2c;
+    position: relative;
+    padding-top: 60px;  /* For header */
+    padding-bottom: 60px;  /* For footer */
+}
+
+.game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 120px);  /* Account for header/footer */
+    width: 100%;
+}
