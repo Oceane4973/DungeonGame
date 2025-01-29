@@ -75,19 +75,19 @@ public class DatabaseInitializer {
             String fileName = file.getName();
             String[] parts = fileName.split("-");
 
-            if (parts.length < 3 || !parts[0].startsWith("sprite"))
+            if (!parts[0].startsWith("spriteID"))
                 continue;
 
             try {
-                Long entityId = Long.parseLong(parts[0].substring(6));
-                String direction = parts[1];
-                int state = Integer.parseInt(parts[2].split("x")[0]);
+                Long entityId = Long.parseLong(parts[0].substring(8)); 
+                String direction = "right";
+                int state = Integer.parseInt(parts[1]);
 
                 if (!List.of("left", "right", "back", "front").contains(direction) || state < 1 || state > 3) {
                     continue;
                 }
 
-                Sprite sprite = new Sprite(fileName, baseUrl + "/" + entityType + "/" + fileName,
+                Sprite sprite = new Sprite(fileName, baseUrl + "/api/images/" + entityType + "/" + fileName,
                         directoryPath + "/" + fileName);
                 
                 Sprite savedSprite = spriteRepository.save(sprite);

@@ -130,7 +130,7 @@ public class HeroService {
                 File outputFile = new File(outputFilePath);
                 ImageIO.write(combinedImage, "png", outputFile);
 
-                Sprite newSprite = new Sprite(fileName, baseUrl + "/hero/" + fileName,
+                Sprite newSprite = new Sprite(fileName, baseUrl + "/api/images/hero/" + fileName,
                         outputFile.getAbsolutePath());
                 spriteRepository.save(newSprite);
 

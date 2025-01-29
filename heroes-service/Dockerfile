@@ -1,19 +1,11 @@
-FROM maven:3.9.9-eclipse-temurin-21-alpine AS builder
+FROM maven:3.9.9-eclipse-temurin-17-alpine AS builder
 
 WORKDIR /app
 
 COPY . .
 
-RUN mvn clean package -DskipTests
-
-
-FROM eclipse-temurin:21
-
-RUN mkdir /opt/app
-WORKDIR /opt/app
-
-COPY --from=builder /app/target/*.jar app.jar
+RUN mvn install -DskipTests
 
 EXPOSE 8081
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["mvn", "spring-boot:run", "-DskipTests"]

@@ -8,8 +8,6 @@ services:
       POSTGRES_DB: dungeon_game_heroes
       POSTGRES_USER: dungeon_user
       POSTGRES_PASSWORD: password
-    ports:
-      - '5432:5432'
     volumes:
       - db-heroes-data:/var/lib/postgresql/data
     networks:
@@ -21,7 +19,7 @@ services:
       context: ./heroes-service
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8080:8080"
     depends_on:
       - db-heroes
     networks:
