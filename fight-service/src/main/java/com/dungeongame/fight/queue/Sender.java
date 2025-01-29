@@ -16,6 +16,6 @@ public class Sender {
 
     public String sendGold(QueueGold queueGold) {
         rabbitTemplate.convertAndSend(goldUserQueue.getName(), queueGold);
-        return " [x] Sent " + queueGold.getGold() + " gold to user " + queueGold.getUserId();
+        return " [x] Sent " + queueGold.getGold() + " gold to user " + queueGold.getUsername();
     }
 }

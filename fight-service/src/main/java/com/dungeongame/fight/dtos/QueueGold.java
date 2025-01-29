@@ -3,16 +3,16 @@ package com.dungeongame.fight.dtos;
 import java.io.Serializable;
 
 public class QueueGold implements Serializable {
-    Long userId;
+    String username;
 
     int gold;
 
-    public Long getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getGold() {
