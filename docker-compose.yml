@@ -37,17 +37,18 @@ services:
     ports:
       - "${SERVICE_FRONTEND_PORT}:80"
     depends_on:
-      - dungeon-game-service-users
-      - dungeon-game-service-fight
+      - dungeon-game-users-service
+      - dungeon-game-fight-service
       - dungeon-game-heroes-service
       - dungeon-game-dungeon-service
+      - dungeon-game-monsters-service
     networks:
       - dungeon-game
     volumes:
       - ./frontend-service:/usr/share/nginx/html
       - ./docker-conf/frontend-service/nginx.conf:/etc/nginx/conf.d/default.conf
 
-  dungeon-game-service-users:
+  dungeon-game-users-service:
     build:
       context: ./users-service
     container_name: dungeon-game-service-users
@@ -70,7 +71,7 @@ services:
     networks:
       - dungeon-game
 
-  dungeon-game-service-fight:
+  dungeon-game-fight-service:
     build:
       context: ./fight-service
     restart: always
@@ -116,6 +117,20 @@ services:
     command: sh -c "npm install && npm run start"
     restart: always
     
+  dungeon-game-monsters-service:
+    build:
+      context: ./monsters-service
+    container_name: dungeon-game-monsters-service
+    environment:  
+      - SPRING_APPLICATION_NAME=dungeongame
+      - MONSTERS_ASSETS_PATH=/app/src/main/resources/assets/monsters/
+    ports:
+      - "${SERVICE_MONSTERS_PORT}:8080"
+    volumes:
+      - ./monsters-service/src/main/resources/assets/monsters:/app/src/main/resources/assets/monsters
+    networks:
+      - dungeon-game
+
   dungeon-game-rabbitmq:
     image: rabbitmq:3.9-management
     restart: always
