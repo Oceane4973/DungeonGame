@@ -31,21 +31,15 @@ services:
       - dungeon-game
 
   dungeon-game-frontend-service:
-    image: nginx:alpine
+    image: node:23-bullseye
     container_name: dungeon-game-frontend-service
-    restart: always
     ports:
-      - "${SERVICE_FRONTEND_PORT}:80"
-    depends_on:
-      - dungeon-game-service-users
-      - dungeon-game-service-fight
-      - dungeon-game-heroes-service
-      - dungeon-game-dungeon-service
-    networks:
-      - dungeon-game
+       - "${SERVICE_FRONTEND_PORT}:8080"
     volumes:
-      - ./frontend-service:/usr/share/nginx/html
-      - ./docker-conf/frontend-service/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend-service:/app
+    working_dir: /app/app
+    command: sh -c "npm install && npm run start"
+    restart: always
 
   dungeon-game-service-users:
     build:
