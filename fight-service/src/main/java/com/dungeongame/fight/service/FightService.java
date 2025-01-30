@@ -28,7 +28,7 @@ public class FightService {
     }
 
     private int calculateDamage(int attack, int level) {
-        double randomMultiplier = 0.8 + (1.2 - 0.8) * random.nextDouble();
+        double randomMultiplier = 0.2 + (0.6 - 0.2) * random.nextDouble();
         return (int) (attack * level * randomMultiplier);
     }
 }
