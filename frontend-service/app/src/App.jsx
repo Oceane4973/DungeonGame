@@ -1,10 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, AuthContext } from "./contexts/AuthContext";
-import SignUpPage from "./pages/SignUpPage";
+import SignupPage from "./pages/SignupPage/SignupPage";
 import { useContext } from "react";
-import HeroPage from "./pages/HeroPage";
-import DungeonPage from "./pages/DungeonPage";
-import LoginPage from "./pages/loginPage";
+import HeroeSelectionPage from "./pages/HeroePage/HeroeSelectionPage";
+import HeroeCreationPage from "./pages/HeroePage/HeroeCreationPage";
+import DungeonPage from "./pages/DungeonPage/DungeonPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
 
 function PrivateRoute({ children }) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -23,8 +24,9 @@ function App() {
               <Routes>
                   <Route path="/" element={<RedirectRoute />} />
                   <Route path="/login" element={<LoginPage />} />
-                  <Route path="/signup" element={<SignUpPage />} /> {/* Nouvelle route */}
-                  <Route path="/hero" element={<PrivateRoute><HeroPage /></PrivateRoute>} />
+                  <Route path="/signup" element={<SignupPage />} /> 
+                  <Route path="/hero" element={<PrivateRoute><HeroeSelectionPage /></PrivateRoute>} />
+                  <Route path="/createHero" element={<PrivateRoute><HeroeCreationPage /></PrivateRoute>} />
                   <Route path="/dungeon" element={<PrivateRoute><DungeonPage /></PrivateRoute>} />
               </Routes>
           </AuthProvider>

@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
-import Header from "../components/header/Header";
-import Footer from "../components/footer/Footer";
+import { AuthContext } from "../../contexts/AuthContext";
+import Header from "../../components/header/Header";
+import Footer from "../../components/footer/Footer";
 
 function DungeonPage() {
     const { logout } = useContext(AuthContext);
