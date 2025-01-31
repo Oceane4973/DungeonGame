@@ -4,102 +4,91 @@ import { AuthContext } from "../../contexts/AuthContext";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import "./HeroeCreationPage.css";
+import { heroeService } from '../../services/heroeService';
 
-function HeroeCreationPage() {
-    const navigate = useNavigate();
-    const { user } = useContext(AuthContext);
+const HeroeCreationPage = () => {
     const [heads, setHeads] = useState([]);
     const [bodies, setBodies] = useState([]);
     const [selectedHead, setSelectedHead] = useState(null);
     const [selectedBody, setSelectedBody] = useState(null);
-    const [heroName, setHeroName] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetchHeadsAndBodies();
+        const fetchSprites = async () => {
+            try {
+                const [headsData, bodiesData] = await Promise.all([
+                    heroeService.getHeads(),
+                    heroeService.getBodies()
+                ]);
+
+                setHeads(headsData);
+                setBodies(bodiesData);
+            } catch (err) {
+                setError(err.message);
+            }
+        };
+
+        fetchSprites();
     }, []);
 
-    const fetchHeadsAndBodies = async () => {
-        try {
-            const [headsResponse, bodiesResponse] = await Promise.all([
-                fetch('http://localhost:8082/api/heroes/heads'),
-                fetch('http://localhost:8082/api/heroes/bodies')
-            ]);
-
-            const headsData = await headsResponse.json();
-            const bodiesData = await bodiesResponse.json();
-
-            setHeads(headsData);
-            setBodies(bodiesData);
-
-            // Sélectionner le premier élément par défaut
-            if (headsData.length > 0) setSelectedHead(headsData[0]);
-            if (bodiesData.length > 0) setSelectedBody(bodiesData[0]);
-        } catch (error) {
-            setError("Erreur lors du chargement des sprites");
-        }
-    };
-
-    const handleCreateHero = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!selectedHead || !selectedBody || !heroName.trim()) {
-            setError("Veuillez remplir tous les champs");
+        
+        if (!selectedHead || !selectedBody) {
+            setError('Veuillez sélectionner une tête et un corps');
             return;
         }
 
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8082/api/heroes/hero', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: user.id,
-                    name: heroName,
-                    level: 1,
-                    attack: 10,
-                    healthPoints: 100,
-                    headId: selectedHead.id,
-                    bodyId: selectedBody.id
-                })
+            const hero = await heroeService.createHero({
+                headId: selectedHead.id,
+                bodyId: selectedBody.id,
             });
-
-            if (response.ok) {
-                navigate("/hero");
-            } else {
-                setError("Erreur lors de la création du héros");
-            }
-        } catch (error) {
-            setError("Erreur lors de la création du héros");
+            
+            navigate('/heroes');
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
+
+    const renderSprite = (item) => {
+        // Utiliser les sprites right puisque front est vide
+        const sprites = item.sprites?.right || [];
+        if (sprites.length === 0) {
+            return null; // Ne rien afficher si pas de sprite
+        }
+        
+        // Prendre le premier sprite de la liste et afficher son image
+        return (
+            <img 
+                src={sprites[0].url} 
+                alt="Character sprite" 
+                style={{
+                    width: '48px',
+                    height: '48px',
+                    imageRendering: 'pixelated'  // Pour garder l'aspect pixel art net
+                }}
+            />
+        );
+    };
+
+    if (error) {
+        return <div className="error-message">{error}</div>;
+    }
 
     return (
         <>
             <Header />
-            <main className="game-container">
-                <h1>Crée ton <span>Héros</span></h1>
-                <p>Personnalise ton héros et lance-toi dans l'aventure.</p>
-
-                <div className="creation-container">
-                    <form onSubmit={handleCreateHero}>
-                        {error && <div className="error-message">{error}</div>}
-                        
-                        <div className="form-group">
-                            <label>Nom du héros</label>
-                            <input
-                                type="text"
-                                value={heroName}
-                                onChange={(e) => setHeroName(e.target.value)}
-                                placeholder="Entrez le nom de votre héros"
-                                required
-                            />
-                        </div>
-
-                        <div className="sprites-selection">
+            <main className="heroe-creation-page">
+                <div className="container">
+                    <h2>Création d'un nouveau héros</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="sprite-selection">
                             <div className="sprite-section">
                                 <h3>Choisissez une tête</h3>
                                 <div className="sprite-grid">
@@ -109,7 +98,7 @@ function HeroeCreationPage() {
                                             className={`sprite-item ${selectedHead?.id === head.id ? 'selected' : ''}`}
                                             onClick={() => setSelectedHead(head)}
                                         >
-                                            <img src={head.sprites.front[0].url} alt="Head sprite" />
+                                            {renderSprite(head)}
                                         </div>
                                     ))}
                                 </div>
@@ -124,7 +113,7 @@ function HeroeCreationPage() {
                                             className={`sprite-item ${selectedBody?.id === body.id ? 'selected' : ''}`}
                                             onClick={() => setSelectedBody(body)}
                                         >
-                                            <img src={body.sprites.front[0].url} alt="Body sprite" />
+                                            {renderSprite(body)}
                                         </div>
                                     ))}
                                 </div>
@@ -136,14 +125,14 @@ function HeroeCreationPage() {
                             <div className="preview-container">
                                 {selectedHead && selectedBody && (
                                     <div className="preview-sprite">
-                                        <img src={selectedBody.sprites.front[0].url} alt="Body preview" className="body-preview" />
-                                        <img src={selectedHead.sprites.front[0].url} alt="Head preview" className="head-preview" />
+                                        {renderSprite(selectedBody)}
+                                        {renderSprite(selectedHead)}
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <button type="submit" className="create-hero-btn" disabled={loading}>
+                        <button type="submit" className="create-hero-btn" disabled={loading || !selectedHead || !selectedBody}>
                             {loading ? "Création en cours..." : "Créer le héros"}
                         </button>
                     </form>
@@ -152,6 +141,6 @@ function HeroeCreationPage() {
             <Footer />
         </>
     );
-}
+};
 
 export default HeroeCreationPage;

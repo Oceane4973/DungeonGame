@@ -42,57 +42,75 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 1rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
 }
 
 .sprite-item {
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
     border: 2px solid #ddd;
     border-radius: 8px;
-    padding: 0.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    background-color: white;
+    min-height: 64px;
+    min-width: 64px;
 }
 
 .sprite-item:hover {
-    border-color: #7C3AED;
-    transform: translateY(-2px);
+    background-color: #f5f5f5;
+    border-color: #bbb;
 }
 
 .sprite-item.selected {
-    border-color: #7C3AED;
-    background-color: rgba(124, 58, 237, 0.1);
+    border-color: #4a90e2;
+    background-color: #e3f2fd;
 }
 
 .sprite-item img {
-    width: 100%;
-    height: auto;
+    width: 48px;
+    height: 48px;
     image-rendering: pixelated;
+    display: block;
 }
 
 .preview-section {
-    text-align: center;
-    margin: 2rem 0;
+    position: fixed;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 300px;
 }
 
 .preview-container {
-    background: #f5f5f5;
-    border-radius: 8px;
-    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 1rem;
 }
 
 .preview-sprite {
     position: relative;
-    width: 128px;
-    height: 128px;
+    width: 200px;
+    height: 200px;
     margin: 0 auto;
 }
 
 .preview-sprite img {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
     image-rendering: pixelated;
 }
 
@@ -105,6 +123,12 @@
 }
 
 .create-hero-btn {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    min-width: 200px;
     background: #7C3AED;
     color: white;
     border: none;
@@ -112,7 +136,6 @@
     border-radius: 8px;
     font-size: 1.1rem;
     cursor: pointer;
-    width: 100%;
     transition: background 0.3s ease;
 }
 
@@ -126,10 +149,150 @@
 }
 
 .error-message {
-    background: #FEE2E2;
-    color: #DC2626;
-    padding: 1rem;
-    border-radius: 6px;
-    margin-bottom: 1rem;
+    color: #d32f2f;
+    margin-top: 1rem;
     text-align: center;
+}
+
+.heroe-creation-page {
+    padding: 2rem;
+}
+
+.heroe-creation-page h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    margin-top: -1rem;
+    text-align: center;
+    color: #333;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.sprite-selection {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.sprite-section {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.sprite-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.sprite-item {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sprite-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sprite-item.selected {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.sprite-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.preview-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.preview-container {
+    margin-top: 1rem;
+}
+
+.preview-sprite {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    margin: 0 auto;
+}
+
+.body-preview,
+.head-preview {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+}
+
+.no-sprite {
+    width: 48px;
+    height: 48px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.submit-button {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 2rem auto 0;
+    padding: 1rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #357abd;
+}
+
+.submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Add custom scrollbar styling */
+.sprite-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sprite-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.sprite-section::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.sprite-section::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

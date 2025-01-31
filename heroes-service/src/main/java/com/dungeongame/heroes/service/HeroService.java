@@ -5,10 +5,11 @@ import com.dungeongame.heroes.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.dungeongame.heroes.config.ServerConfig;
 import com.dungeongame.heroes.dto.HeroDTO;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
-import com.dungeongame.heroes.provider.ServerInfoProvider;
 import jakarta.persistence.PersistenceContext;
 
 import javax.imageio.ImageIO;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 @Service
 public class HeroService {
 
-    private final ServerInfoProvider serverInfoProvider;
+    private final ServerConfig serverConfig;
 
     @Autowired
     private HeroRepository heroRepository;
@@ -42,8 +43,8 @@ public class HeroService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public HeroService(ServerInfoProvider serverInfoProvider) { // ✅ Correct
-        this.serverInfoProvider = serverInfoProvider;
+    public HeroService(ServerConfig serverConfig) { // ✅ Correct
+        this.serverConfig = serverConfig;
     }
 
     @Value("${app.images.hero-dir}")
@@ -107,7 +108,7 @@ public class HeroService {
                     "Mismatch in sprite counts for head and body for direction: " + direction);
         }
 
-        String baseUrl = serverInfoProvider.getServerUrl();
+        String baseUrl = serverConfig.getServerUrl();
 
         for (int i = 0; i < headSprites.size(); i++) {
             Sprite headSprite = headSprites.get(i);
