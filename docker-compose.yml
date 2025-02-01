@@ -1,23 +1,20 @@
 services:
-  db-users:
+  dungeon-game-db-users:
     image: postgres:latest
-    container_name: dungeon-game-db-users
-    restart: always
     environment:
-      POSTGRES_DB: ${DB_USER_POSTGRES_DB}
-      POSTGRES_USER: ${DB_USER_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${DB_USER_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DB_USERS_POSTGRES_DB}
+      POSTGRES_USER: ${DB_USERS_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DB_USERS_POSTGRES_PASSWORD}
     ports:
-      - '${DB_USER_PORT}:5432'
+      - '${DB_USERS_PORT}:5432'
     volumes:
-      - db-users-data:/var/lib/postgresql/data
+      - dungeon-game-db-users-data:/var/lib/postgresql/data
     networks:
-      - dungeon-game
-
-  db-heroes:
-    image: postgres:latest
-    container_name: dungeon-game-db-heroes
+      - dungeon-game-network
     restart: always
+
+  dungeon-game-db-heroes:
+    image: postgres:latest
     environment:
       POSTGRES_DB: ${DB_HEROES_POSTGRES_DB}
       POSTGRES_USER: ${DB_HEROES_POSTGRES_USER}
@@ -25,122 +22,115 @@ services:
     ports:
       - '${DB_HEROES_PORT}:5432'
     volumes:
-      - db-heroes-data:/var/lib/postgresql/data
+      - dungeon-game-db-heroes-data:/var/lib/postgresql/data
     networks:
-      - dungeon-game
+      - dungeon-game-network
+    restart: always
 
   dungeon-game-frontend-service:
     image: node:23-bullseye
-    container_name: dungeon-game-frontend-service
     ports:
-       - "${SERVICE_FRONTEND_PORT}:8080"
+      - "${SERVICE_FRONTEND_PORT}:8080"
     volumes:
       - ./frontend-service:/app
     working_dir: /app/app
     command: sh -c "npm install && npm run start"
+    networks:
+      - dungeon-game-network
     restart: always
 
-  dungeon-game-service-users:
+  dungeon-game-users-service:
     build:
       context: ./users-service
-    container_name: dungeon-game-service-users
-    environment:  
-      - SPRING_DATASOURCE_URL=${SERVICE_USERS_SPRING_DATASOURCE_URL}
-      - SPRING_DATASOURCE_USERNAME=${SERVICE_USERS_SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SERVICE_USERS_SPRING_DATASOURCE_PASSWORD}
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dungeon-game-db-users:5432/${DB_USERS_POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERS_POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_USERS_POSTGRES_PASSWORD}
       - SECURITY_JWT_SECRET_KEY=${SERVICE_USERS_SECURITY_JWT_SECRET_KEY}
       - SECURITY_JWT_EXPIRATION_TIME=${SERVICE_USERS_SECURITY_JWT_EXPIRATION_TIME}
-      - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq
-      - SPRING_RABBITMQ_PORT=${SPRING_RABBITMQ_SEND_PORT}
+      - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq-service
+      - SPRING_RABBITMQ_PORT=5672
       - SPRING_RABBITMQ_USERNAME=${SPRING_RABBITMQ_USERNAME}
       - SPRING_RABBITMQ_PASSWORD=${SPRING_RABBITMQ_PASSWORD}
-    restart: always
     ports:
       - '${SERVICE_USERS_PORT}:8080'
     depends_on:
-      - dungeon-game-rabbitmq
-      - db-users
+      - dungeon-game-db-users
+      - dungeon-game-rabbitmq-service
     networks:
-      - dungeon-game
-
-  dungeon-game-service-fight:
-    build:
-      context: ./fight-service
+      - dungeon-game-network
     restart: always
-    container_name: dungeon-game-service-fight
-    environment:  
-      - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq
-      - SPRING_RABBITMQ_PORT=${SPRING_RABBITMQ_SEND_PORT}
+
+  dungeon-game-fights-service:
+    build:
+      context: ./fights-service
+    environment:
+      - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq-service
+      - SPRING_RABBITMQ_PORT=5672
       - SPRING_RABBITMQ_USERNAME=${SPRING_RABBITMQ_USERNAME}
       - SPRING_RABBITMQ_PASSWORD=${SPRING_RABBITMQ_PASSWORD}
     ports:
-      - '${SERVICE_FIGHT_PORT}:8080'
+      - '${SERVICE_FIGHTS_PORT}:8080'
     depends_on:
-      - dungeon-game-rabbitmq
+      - dungeon-game-rabbitmq-service
     networks:
-      - dungeon-game
+      - dungeon-game-network
+    restart: always
 
   dungeon-game-heroes-service:
     build:
       context: ./heroes-service
-    container_name: dungeon-game-heroes-service
-    environment:  
-      - SPRING_DATASOURCE_URL=${SERVICE_HEROES_SPRING_DATASOURCE_URL}
-      - SPRING_DATASOURCE_USERNAME=${SERVICE_HEROES_SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SERVICE_HEROES_SPRING_DATASOURCE_PASSWORD}
-      - SERVICE_HEROES_PORT=${SERVICE_HEROES_PORT}
-      - SERVICE_HEROES_HOST=${SERVICE_HOST}
-      - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq
-      - SPRING_RABBITMQ_PORT=${SPRING_RABBITMQ_SEND_PORT}
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dungeon-game-db-heroes:5432/${DB_HEROES_POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${DB_HEROES_POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_HEROES_POSTGRES_PASSWORD]
+      - SERVICE_HEROES_HOST=dungeon-game-heroes-service
+      - SERVICE_HEROES_PORT=8080
+      - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq-service
+      - SPRING_RABBITMQ_PORT=5672
       - SPRING_RABBITMQ_USERNAME=${SPRING_RABBITMQ_USERNAME}
       - SPRING_RABBITMQ_PASSWORD=${SPRING_RABBITMQ_PASSWORD}
     ports:
       - "${SERVICE_HEROES_PORT}:8080"
     depends_on:
-      - db-heroes
+      - dungeon-game-db-heroes
+      - dungeon-game-rabbitmq-service
     networks:
-      - dungeon-game
+      - dungeon-game-network
+    restart: always
 
-  dungeon-game-monsters-service:
-    build:
-      context: ./monsters-service
-    container_name: dungeon-game-monsters-service
-    ports:
-      - "${SERVICE_MONSTERS_PORT}:8080"
-    networks:
-      - dungeon-game
-
-  dungeon-game-dungeon-service:
+  dungeon-game-dungeons-service:
     image: node:23-bullseye
-    container_name: dungeon-game-dungeon-service
-    environment:  
-      - SERVICE_DUNGEON_PORT=${SERVICE_DUNGEON_PORT}
-      - SERVICE_DUNGEON_HOST=${SERVICE_HOST}
+    environment:
+      - SERVICE_DUNGEONS_HOST=dungeon-game-dungeons-service
+      - SERVICE_DUNGEONS_PORT=3000
     ports:
-      - "${SERVICE_DUNGEON_PORT}:3000"
+      - "${SERVICE_DUNGEONS_PORT}:3000"
     volumes:
       - ./dungeons-service:/app
     working_dir: /app
     command: sh -c "npm install && npm run start"
+    networks:
+      - dungeon-game-network
     restart: always
-    
-  dungeon-game-rabbitmq:
+
+  dungeon-game-rabbitmq-service:
     image: rabbitmq:3.9-management
-    restart: always
     ports:
       - '${SPRING_RABBITMQ_SEND_PORT}:5672'
       - '${SPRING_RABBITMQ_VIEW_PORT}:15672'
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq/
-      - rabbitmq_log:/var/log/rabbitmq/
+      - dungeon-game-rabbitmq-data:/var/lib/rabbitmq/
+      - dungeon-game-rabbitmq-log:/var/log/rabbitmq/
     networks:
-      - dungeon-game
+      - dungeon-game-network
+    restart: always
 
 volumes:
-  db-users-data:
-  db-heroes-data:
-  rabbitmq_data:
-  rabbitmq_log:
+  dungeon-game-db-users-data:
+  dungeon-game-db-heroes-data:
+  dungeon-game-rabbitmq-data:
+  dungeon-game-rabbitmq-log:
 
 networks:
-  dungeon-game:
+  dungeon-game-network:
