@@ -83,7 +83,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://dungeon-game-db-heroes:5432/${DB_HEROES_POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${DB_HEROES_POSTGRES_USER}
-      - SPRING_DATASOURCE_PASSWORD=${DB_HEROES_POSTGRES_PASSWORD]
+      - SPRING_DATASOURCE_PASSWORD=${DB_HEROES_POSTGRES_PASSWORD}
       - SERVICE_HEROES_HOST=dungeon-game-heroes-service
       - SERVICE_HEROES_PORT=8080
       - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq-service
