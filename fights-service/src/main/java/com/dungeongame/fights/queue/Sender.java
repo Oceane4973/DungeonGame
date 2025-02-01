@@ -13,18 +13,18 @@ public class Sender {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private Queue goldUserQueue;
+    private Queue queueFightsToUsersGold;
 
     @Autowired
-    private Queue healthHeroQueue;
+    private Queue queueFightsToHeroHealth;
 
-    public String sendGold(QueueGold queueGold) {
-        rabbitTemplate.convertAndSend(goldUserQueue.getName(), queueGold);
+    public String sendQueueFightsToUserGold(QueueGold queueGold) {
+        rabbitTemplate.convertAndSend(queueFightsToUsersGold.getName(), queueGold);
         return " [x] Sent " + queueGold.getGold() + " gold to user " + queueGold.getUsername();
     }
 
-    public String updateHealth(QueueHealthHero queueHealthHero) {
-        rabbitTemplate.convertAndSend(healthHeroQueue.getName(), queueHealthHero);
+    public String sendQueueFightsToHeroesHealth(QueueHealthHero queueHealthHero) {
+        rabbitTemplate.convertAndSend(queueFightsToHeroHealth.getName(), queueHealthHero);
         return " [x] Sent " + queueHealthHero.getHeroHealth() + " health to hero " + queueHealthHero.getHeroId();
     }
 }

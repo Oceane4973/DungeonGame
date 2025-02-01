@@ -2,6 +2,7 @@ package com.dungeongame.heroes.config;
 
 import com.dungeongame.heroes.dto.QueueHealthHero;
 import com.dungeongame.heroes.queue.Receiver;
+import com.dungeongame.heroes.queue.Sender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
@@ -18,13 +19,18 @@ import java.util.Map;
 @Configuration
 public class QueueConfig {
     @Bean
-    public Queue userGoldQueue() {
-        return new Queue("rabbitmq-fights-to-heroes-health");
+    public Queue queueHeroesToFrontendHealth() {
+        return new Queue("rabbitmq-heroes-to-frontend-health");
     }
 
     @Bean
     public Receiver receiver() {
         return new Receiver();
+    }
+
+    @Bean
+    Sender sender() {
+        return new Sender();
     }
 
     @Bean
@@ -49,7 +55,7 @@ public class QueueConfig {
     public DefaultClassMapper getClassMapper() {
         DefaultClassMapper classMapper = new DefaultClassMapper();
         Map<String, Class<?>> map = new HashMap<>();
-        map.put("com.dungeongame.fight.dtos.QueueHealthHero", QueueHealthHero.class);
+        map.put("com.dungeongame.fights.dto.QueueHealthHero", QueueHealthHero.class);
         classMapper.setIdClassMapping(map);
         return classMapper;
     }

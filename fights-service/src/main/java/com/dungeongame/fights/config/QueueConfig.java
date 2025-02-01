@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class QueueConfig {
     @Bean
-    public Queue goldUserQueue() {
+    public Queue queueFightsToUsersGold() {
         return new Queue("rabbitmq-fights-to-user-gold");
     }
 
     @Bean
-    public Queue healthHeroQueue() {
+    public Queue queueFightsToHeroHealth() {
         return new Queue("rabbitmq-fights-to-heroes-health");
     }
 
@@ -31,8 +31,7 @@ public class QueueConfig {
     }
 
     @Bean
-    public Jackson2JsonMessageConverter getConverter(
-            @Autowired ObjectMapper objectMapper) {
+    public Jackson2JsonMessageConverter getConverter(@Autowired ObjectMapper objectMapper) {
         return new Jackson2JsonMessageConverter(objectMapper);
     }
 }

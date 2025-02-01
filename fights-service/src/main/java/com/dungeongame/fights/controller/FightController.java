@@ -34,14 +34,14 @@ public class FightController {
                 queueGold.setGold(5);
                 queueGold.setUsername(fight.getUsername());
 
-                sender.sendGold(queueGold);
+                sender.sendQueueFightsToUserGold(queueGold);
             }
 
             QueueHealthHero queueHealthHero = new QueueHealthHero();
             queueHealthHero.setHeroId(fight.getHeroId());
             queueHealthHero.setHeroHealth(fight.getHeroHealth());
 
-            sender.updateHealth(queueHealthHero);
+            sender.sendQueueFightsToHeroesHealth(queueHealthHero);
 
             return ResponseEntity.ok(fightService.fight(fight));
         } catch (Exception e) {

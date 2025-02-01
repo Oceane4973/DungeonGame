@@ -1,12 +1,16 @@
 package com.dungeongame.users.service;
 
 import com.dungeongame.users.dto.QueueGold;
+import com.dungeongame.users.queue.Sender;
 import com.dungeongame.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    @Autowired
+    private Sender sender;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -15,6 +19,8 @@ public class UserService {
             user.setGold(user.getGold() + queueGold.getGold());
 
             userRepository.save(user);
+
+            sender.sendQueueUsersToFrontendGold(String.valueOf(user.getGold()));
         });
 
     }

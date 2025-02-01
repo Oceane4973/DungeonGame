@@ -2,6 +2,7 @@ package com.dungeongame.users.config;
 
 import com.dungeongame.users.dto.QueueGold;
 import com.dungeongame.users.queue.Receiver;
+import com.dungeongame.users.queue.Sender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
@@ -18,13 +19,18 @@ import java.util.Map;
 @Configuration
 public class QueueConfig {
     @Bean
-    public Queue userGoldQueue() {
-        return new Queue("rabbitmq-fights-to-user-gold");
+    public Queue queueUsersToFrontendGold() {
+        return new Queue("rabbitmq-users-to-frontend-gold");
     }
 
     @Bean
     public Receiver receiver() {
         return new Receiver();
+    }
+
+    @Bean
+    public Sender sender() {
+        return new Sender();
     }
 
     @Bean
@@ -49,7 +55,7 @@ public class QueueConfig {
     public DefaultClassMapper getClassMapper() {
         DefaultClassMapper classMapper = new DefaultClassMapper();
         Map<String, Class<?>> map = new HashMap<>();
-        map.put("com.dungeongame.fight.dtos.QueueGold", QueueGold.class);
+        map.put("com.dungeongame.fight.dto.QueueGold", QueueGold.class);
         classMapper.setIdClassMapping(map);
         return classMapper;
     }
