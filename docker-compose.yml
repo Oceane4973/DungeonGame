@@ -29,11 +29,35 @@ services:
 
   dungeon-game-frontend-service:
     image: node:23-bullseye
+    environment:
+      - REACT_APP_BACKEND_SOCKET_URL=http://dungeon-game-backend-service:3000
+      - REACT_APP_USERS_SERVICE_URL=http://dungeon-game-users-service:8080
+      - REACT_APP_FIGHTS_SERVICE_URL=http://dungeon-game-fights-service:8080
+      - REACT_APP_HEROES_SERVICE_URL=http://dungeon-game-heroes-service:8080
+      - REACT_APP_DUNGEONS_SERVICE_URL=http://dungeon-game-dungeons-service:3000
     ports:
-      - "${SERVICE_FRONTEND_PORT}:8080"
+       - "${SERVICE_FRONTEND_PORT}:3000"
     volumes:
       - ./frontend-service:/app
     working_dir: /app/app
+    command: sh -c "npm install && npm run start"
+    networks:
+      - dungeon-game-network
+    restart: always
+
+  dungeon-game-backend-service:
+    image: node:23-bullseye
+    environment:
+      - PORT=3000
+      - RABBITMQ_HOST=dungeon-game-rabbitmq-service
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=${SPRING_RABBITMQ_USERNAME}
+      - RABBITMQ_PASSWORD=${SPRING_RABBITMQ_PASSWORD}
+    ports:
+      - "${SERVICE_BACKEND_PORT}:3000"
+    volumes:
+      - ./backend-service:/app
+    working_dir: /app
     command: sh -c "npm install && npm run start"
     networks:
       - dungeon-game-network

@@ -6,8 +6,8 @@ import Footer from "../../components/footer/Footer";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./HeroeSelectionPage.css";
-import { heroeService } from '../../services/heroeService';
+import "./HeroSelectionPage.css";
+import { heroService } from '../../services/heroService';
 
 function HeroPage() {
     const navigate = useNavigate();
@@ -67,19 +67,19 @@ function HeroPage() {
                     <h1>Choisis ton Héros et fonce !</h1>
                     <p>Fais ton propre choix et lance toi dans l'aventure DungeonGame.</p>
                 </div>
-                
+
                 <div className="carousel-container">
                     {heroes.length > 0 ? (
                         <Slider {...settings}>
                             {heroes.map((hero, index) => (
-                                <div 
-                                    key={hero.id} 
+                                <div
+                                    key={hero.id}
                                     className={currentSlide === index ? "hero-slide center" : "hero-slide"}
                                 >
                                     <div className="hero-card">
                                         <div className="hero-image">
-                                            <img 
-                                                src={hero.headSprite?.url} 
+                                            <img
+                                                src={hero.headSprite?.url}
                                                 alt={`${hero.name} head`}
                                                 style={{
                                                     position: 'absolute',
@@ -89,7 +89,7 @@ function HeroPage() {
                                                     zIndex: 2
                                                 }}
                                             />
-                                            <img 
+                                            <img
                                                 src={hero.bodySprite?.url}
                                                 alt={`${hero.name} body`}
                                                 style={{
@@ -107,7 +107,7 @@ function HeroPage() {
                                             <p className="hero-stats">⚔️ Attaque: <strong>{hero.attack}</strong></p>
                                             <p className="hero-stats">❤️ Points de vie: <strong>{hero.healthPoints}</strong></p>
                                         </div>
-                                        <button 
+                                        <button
                                             className="select-hero-btn"
                                             onClick={() => navigate(`/dungeon?heroId=${hero.id}`)}
                                         >

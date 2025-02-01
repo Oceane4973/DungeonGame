@@ -7,7 +7,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
-@RabbitListener(queues = "health-hero")
+@RabbitListener(queues = "rabbitmq-fights-to-heroes-health")
 public class Receiver {
     @Autowired
     private HeroService heroService;

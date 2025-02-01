@@ -1,7 +1,7 @@
 class UserService {
     async login(username, password) {
         try {
-            const response = await fetch('http://localhost:8081/api/auth/signin', {
+            const response = await fetch(`${process.env.REACT_APP_USERS_SERVICE_URL}/api/auth/signin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ class UserService {
 
     async signup(username, password) {
         try {
-            const response = await fetch('http://localhost:8081/api/auth/signup', {
+            const response = await fetch(`${process.env.REACT_APP_USERS_SERVICE_URL}/api/auth/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ class UserService {
                 throw new Error('Non authentifié');
             }
 
-            const response = await fetch('http://localhost:8081/api/users/me', {
+            const response = await fetch(`${process.env.REACT_APP_USERS_SERVICE_URL}/api/users/me`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`

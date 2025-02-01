@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
-import "./HeroeCreationPage.css";
-import { heroeService } from '../../services/heroeService';
+import "./HeroCreationPage.css";
+import { heroService } from '../../services/heroService';
 
-const HeroeCreationPage = () => {
+const HeroCreationPage = () => {
     const [heads, setHeads] = useState([]);
     const [bodies, setBodies] = useState([]);
     const [selectedHead, setSelectedHead] = useState(null);
@@ -27,8 +27,8 @@ const HeroeCreationPage = () => {
         const fetchSprites = async () => {
             try {
                 const [headsData, bodiesData] = await Promise.all([
-                    heroeService.getHeads(),
-                    heroeService.getBodies()
+                    heroService.getHeads(),
+                    heroService.getBodies()
                 ]);
 
                 setHeads(headsData);
@@ -44,16 +44,16 @@ const HeroeCreationPage = () => {
     const generateRandomHeroName = () => {
         const prefixes = ['Brave', 'Vaillant', 'Mystérieux', 'Légendaire', 'Intrépide', 'Redoutable', 'Sage'];
         const suffixes = ['Guerrier', 'Mage', 'Paladin', 'Archer', 'Chevalier', 'Aventurier', 'Héros'];
-        
+
         const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
         const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-        
+
         return `${randomPrefix} ${randomSuffix}`;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!user || !user.id) {
             setError('Vous devez être connecté pour créer un héros');
             return;
@@ -75,8 +75,8 @@ const HeroeCreationPage = () => {
                 healthPoints: Math.floor(Math.random() * 50) + 75,
                 userId: user.id
             };
-            
-            const hero = await heroeService.createHero(heroData);
+
+            const hero = await heroService.createHero(heroData);
             navigate('/hero');
         } catch (err) {
             setError(err.message);
@@ -91,12 +91,12 @@ const HeroeCreationPage = () => {
         if (sprites.length === 0) {
             return null; // Ne rien afficher si pas de sprite
         }
-        
+
         // Prendre le premier sprite de la liste et afficher son image
         return (
-            <img 
-                src={sprites[0].url} 
-                alt="Character sprite" 
+            <img
+                src={sprites[0].url}
+                alt="Character sprite"
                 style={{
                     width: '48px',
                     height: '48px',
@@ -174,4 +174,4 @@ const HeroeCreationPage = () => {
     );
 };
 
-export default HeroeCreationPage;
+export default HeroCreationPage;

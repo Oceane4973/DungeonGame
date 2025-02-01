@@ -12,12 +12,12 @@ import org.springframework.context.annotation.Configuration;
 public class QueueConfig {
     @Bean
     public Queue goldUserQueue() {
-        return new Queue("user-gold");
+        return new Queue("rabbitmq-fights-to-user-gold");
     }
 
     @Bean
     public Queue healthHeroQueue() {
-        return new Queue("health-hero");
+        return new Queue("rabbitmq-fights-to-heroes-health");
     }
 
     @Bean

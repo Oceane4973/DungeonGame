@@ -19,7 +19,7 @@ import java.util.Map;
 public class QueueConfig {
     @Bean
     public Queue userGoldQueue() {
-        return new Queue("user-gold");
+        return new Queue("rabbitmq-fights-to-user-gold");
     }
 
     @Bean
