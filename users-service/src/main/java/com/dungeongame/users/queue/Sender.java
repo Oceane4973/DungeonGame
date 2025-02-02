@@ -14,7 +14,10 @@ public class Sender {
     private Queue queueUsersToFrontendGold;
 
     public String sendQueueUsersToFrontendGold(String userGold) {
-        rabbitTemplate.convertAndSend(queueUsersToFrontendGold.getName(), userGold);
+        rabbitTemplate.convertAndSend(
+                "rabbitmq-users-exchange",
+                "users.to.frontend.gold",
+                userGold);
         return " [x] Sent " + userGold + " gold to frontend";
     }
 }

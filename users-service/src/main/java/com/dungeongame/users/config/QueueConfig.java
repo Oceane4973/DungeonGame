@@ -4,6 +4,9 @@ import com.dungeongame.users.dto.QueueGold;
 import com.dungeongame.users.queue.Receiver;
 import com.dungeongame.users.queue.Sender;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.DefaultJackson2JavaTypeMapper;
@@ -34,6 +37,18 @@ public class QueueConfig {
     }
 
     @Bean
+    public DirectExchange usersExchange() {
+        return new DirectExchange("rabbitmq-users-exchange");
+    }
+
+    @Bean
+    public Binding bindingHeroesToFrontendHealth(Queue queueUsersToFrontendGold, DirectExchange usersExchange) {
+        return BindingBuilder.bind(queueUsersToFrontendGold)
+                .to(usersExchange)
+                .with("users.to.frontend.gold");
+    }
+
+    @Bean
     public ObjectMapper getObjectMapper() {
         return new ObjectMapper();
     }
@@ -55,7 +70,7 @@ public class QueueConfig {
     public DefaultClassMapper getClassMapper() {
         DefaultClassMapper classMapper = new DefaultClassMapper();
         Map<String, Class<?>> map = new HashMap<>();
-        map.put("com.dungeongame.fight.dto.QueueGold", QueueGold.class);
+        map.put("com.dungeongame.fights.dto.QueueGold", QueueGold.class);
         classMapper.setIdClassMapping(map);
         return classMapper;
     }

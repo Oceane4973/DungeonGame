@@ -4,6 +4,9 @@ import com.dungeongame.heroes.dto.QueueHealthHero;
 import com.dungeongame.heroes.queue.Receiver;
 import com.dungeongame.heroes.queue.Sender;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.DefaultJackson2JavaTypeMapper;
@@ -20,7 +23,7 @@ import java.util.Map;
 public class QueueConfig {
     @Bean
     public Queue queueHeroesToFrontendHealth() {
-        return new Queue("rabbitmq-heroes-to-frontend-health");
+        return new Queue("rabbitmq-heroes-to-frontend-health", true);
     }
 
     @Bean
@@ -31,6 +34,18 @@ public class QueueConfig {
     @Bean
     Sender sender() {
         return new Sender();
+    }
+
+    @Bean
+    public DirectExchange heroesExchange() {
+        return new DirectExchange("rabbitmq-heroes-exchange");
+    }
+
+    @Bean
+    public Binding bindingHeroesToFrontendHealth(Queue queueHeroesToFrontendHealth, DirectExchange heroesExchange) {
+        return BindingBuilder.bind(queueHeroesToFrontendHealth)
+                .to(heroesExchange)
+                .with("heroes.to.frontend.health");
     }
 
     @Bean

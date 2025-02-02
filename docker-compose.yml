@@ -1,6 +1,7 @@
 services:
   dungeon-game-db-users:
     image: postgres:latest
+    container_name: dungeon-game-db-users
     environment:
       POSTGRES_DB: ${DB_USERS_POSTGRES_DB}
       POSTGRES_USER: ${DB_USERS_POSTGRES_USER}
@@ -15,6 +16,7 @@ services:
 
   dungeon-game-db-heroes:
     image: postgres:latest
+    container_name: dungeon-game-db-heroes
     environment:
       POSTGRES_DB: ${DB_HEROES_POSTGRES_DB}
       POSTGRES_USER: ${DB_HEROES_POSTGRES_USER}
@@ -29,12 +31,13 @@ services:
 
   dungeon-game-frontend-service:
     image: node:23-bullseye
+    container_name: dungeon-game-frontend-service
     environment:
-      - REACT_APP_BACKEND_SOCKET_URL=http://dungeon-game-backend-service:3000
-      - REACT_APP_USERS_SERVICE_URL=http://dungeon-game-users-service:8080
-      - REACT_APP_FIGHTS_SERVICE_URL=http://dungeon-game-fights-service:8080
-      - REACT_APP_HEROES_SERVICE_URL=http://dungeon-game-heroes-service:8080
-      - REACT_APP_DUNGEONS_SERVICE_URL=http://dungeon-game-dungeons-service:3000
+      - REACT_APP_BACKEND_SOCKET_URL=http://localhost:${SERVICE_BACKEND_PORT}
+      - REACT_APP_USERS_SERVICE_URL=http://localhost:${SERVICE_USERS_PORT}
+      - REACT_APP_FIGHTS_SERVICE_URL=http://localhost:${SERVICE_FIGHTS_PORT}
+      - REACT_APP_HEROES_SERVICE_URL=http://localhost:${SERVICE_HEROES_PORT}
+      - REACT_APP_DUNGEONS_SERVICE_URL=http://localhost:${SERVICE_DUNGEONS_PORT}
     ports:
        - "${SERVICE_FRONTEND_PORT}:3000"
     volumes:
@@ -47,6 +50,7 @@ services:
 
   dungeon-game-backend-service:
     image: node:23-bullseye
+    container_name: dungeon-game-backend-service
     environment:
       - PORT=3000
       - RABBITMQ_HOST=dungeon-game-rabbitmq-service
@@ -55,6 +59,8 @@ services:
       - RABBITMQ_PASSWORD=${SPRING_RABBITMQ_PASSWORD}
     ports:
       - "${SERVICE_BACKEND_PORT}:3000"
+    depends_on:
+      - dungeon-game-rabbitmq-service
     volumes:
       - ./backend-service:/app
     working_dir: /app
@@ -66,6 +72,7 @@ services:
   dungeon-game-users-service:
     build:
       context: ./users-service
+    container_name: dungeon-game-users-service
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://dungeon-game-db-users:5432/${DB_USERS_POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${DB_USERS_POSTGRES_USER}
@@ -88,6 +95,7 @@ services:
   dungeon-game-fights-service:
     build:
       context: ./fights-service
+    container_name: dungeon-game-fights-service
     environment:
       - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq-service
       - SPRING_RABBITMQ_PORT=5672
@@ -104,12 +112,13 @@ services:
   dungeon-game-heroes-service:
     build:
       context: ./heroes-service
+    container_name: dungeon-game-heroes-service
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://dungeon-game-db-heroes:5432/${DB_HEROES_POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${DB_HEROES_POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_HEROES_POSTGRES_PASSWORD}
-      - SERVICE_HEROES_HOST=dungeon-game-heroes-service
-      - SERVICE_HEROES_PORT=8080
+      - SERVICE_HEROES_HOST=localhost
+      - SERVICE_HEROES_PORT=${SERVICE_HEROES_PORT}
       - SPRING_RABBITMQ_HOST=dungeon-game-rabbitmq-service
       - SPRING_RABBITMQ_PORT=5672
       - SPRING_RABBITMQ_USERNAME=${SPRING_RABBITMQ_USERNAME}
@@ -125,9 +134,10 @@ services:
 
   dungeon-game-dungeons-service:
     image: node:23-bullseye
+    container_name: dungeon-game-dungeons-service
     environment:
-      - SERVICE_DUNGEONS_HOST=dungeon-game-dungeons-service
-      - SERVICE_DUNGEONS_PORT=3000
+      - SERVICE_DUNGEONS_HOST=localhost
+      - SERVICE_DUNGEONS_PORT=${SERVICE_DUNGEONS_PORT}
     ports:
       - "${SERVICE_DUNGEONS_PORT}:3000"
     volumes:
@@ -140,6 +150,7 @@ services:
 
   dungeon-game-rabbitmq-service:
     image: rabbitmq:3.9-management
+    container_name: dungeon-game-rabbitmq-service
     ports:
       - '${SPRING_RABBITMQ_SEND_PORT}:5672'
       - '${SPRING_RABBITMQ_VIEW_PORT}:15672'

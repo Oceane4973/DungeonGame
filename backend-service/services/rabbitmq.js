@@ -1,7 +1,7 @@
 const amqp = require('amqplib');
 
 const RABBITMQ_URL = `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT}`;
-const QUEUES = ['rabbitmq-users-to-front-gold', 'rabbitmq-heroes-to-front-health'];
+const QUEUES = ['rabbitmq-users-to-frontend-gold', 'rabbitmq-heroes-to-frontend-health'];
 
 async function connectRabbitMQ(io) {
     try {
