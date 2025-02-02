@@ -6,6 +6,7 @@ import HeroeSelectionPage from "./pages/HeroePage/HeroeSelectionPage";
 import HeroeCreationPage from "./pages/HeroePage/HeroeCreationPage";
 import DungeonPage from "./pages/DungeonPage/DungeonPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import UserPage from './pages/UserPage/UserPage';
 
 function PrivateRoute({ children }) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -28,6 +29,7 @@ function App() {
                   <Route path="/hero" element={<PrivateRoute><HeroeSelectionPage /></PrivateRoute>} />
                   <Route path="/createHero" element={<PrivateRoute><HeroeCreationPage /></PrivateRoute>} />
                   <Route path="/dungeon" element={<PrivateRoute><DungeonPage /></PrivateRoute>} />
+                  <Route path="/profile" element={<PrivateRoute><UserPage /></PrivateRoute>} />
               </Routes>
           </AuthProvider>
       </Router>

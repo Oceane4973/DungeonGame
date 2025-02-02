@@ -1,7 +1,10 @@
 .header {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #2d2d2d;
+  padding: 1rem;
   color: white;
-  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   position: fixed;
   left: 0;
@@ -10,11 +13,7 @@
 
 .header {
   top: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  padding: 1rem 2rem;
 }
 
 .header h1 {
@@ -26,4 +25,48 @@
   display: flex;
   gap: 1rem;
   margin-left: auto;
+}
+
+.profile-icon {
+  cursor: pointer;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.gold-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+}
+
+.gold-icon-small {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    display: block;
+}
+
+.gold-amount-header {
+    color: white;
+    font-weight: 600;
+}
+
+.logo {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.logo:hover {
+    text-decoration: none;
+    color: white;
 }

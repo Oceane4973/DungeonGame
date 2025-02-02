@@ -273,3 +273,26 @@
 .select-hero-btn:hover {
     background: #000;
 }
+
+.hero-header-card {
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 1.2rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    max-width: 800px;
+    width: 115%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-header-card h1 {
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+}
+
+.hero-header-card p {
+    color: #666;
+    margin-bottom: 0;
+}

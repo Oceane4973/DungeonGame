@@ -37,8 +37,10 @@ function HeroPage() {
         <>
             <Header />
             <main className="game-container">
-                <h1>Choisis ton Héros et fonce !</h1>
-                <p>Fais ton propre choix et lance toi dans l'aventure DungeonGame.</p>
+                <div className="hero-header-card">
+                    <h1>Choisis ton Héros et fonce !</h1>
+                    <p>Fais ton propre choix et lance toi dans l'aventure DungeonGame.</p>
+                </div>
                 
                 <div className="carousel-container">
                     <Slider {...settings}>
