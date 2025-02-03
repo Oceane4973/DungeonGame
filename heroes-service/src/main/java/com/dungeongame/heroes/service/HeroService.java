@@ -64,82 +64,82 @@ public class HeroService {
 
     @Transactional
     public Hero createHero(HeroDTO heroDTO) {
-        Head head = headRepository.findById(heroDTO.getHeadId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid head ID: " + heroDTO.getHeadId()));
-        Body body = bodyRepository.findById(heroDTO.getBodyId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid body ID: " + heroDTO.getBodyId()));
-
         Hero hero = new Hero();
         hero.setUserId(heroDTO.getUserId());
         hero.setName(heroDTO.getName());
         hero.setLevel(heroDTO.getLevel());
         hero.setAttack(heroDTO.getAttack());
         hero.setHealthPoints(heroDTO.getHealthPoints());
-
-        hero = heroRepository.save(hero);
-
-        SpriteSet heroSprites = createCustomSpriteSet(hero, head, body);
+        
+        // Récupérer les sprites depuis la base de données en utilisant les IDs
+        Head head = headRepository.findById(heroDTO.getHeadId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid head ID"));
+        Body body = bodyRepository.findById(heroDTO.getBodyId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid body ID"));
+        
+        // Récupérer les sprites complets
+        SpriteSet headSprites = head.getSprites();
+        SpriteSet bodySprites = body.getSprites();
+        
+        // Créer et associer le SpriteSet
+        SpriteSet heroSprites = createCustomSpriteSet(hero, headSprites, bodySprites);
         hero.setSprites(heroSprites);
-
-        hero = heroRepository.save(hero);
-
-        return hero;
+        
+        // Sauvegarder les références des sprites individuels
+        hero.setHeadSprite(head.getSprites().getRight().get(0));
+        hero.setBodySprite(body.getSprites().getRight().get(0));
+        
+        return heroRepository.save(hero);
     }
 
-    private SpriteSet createCustomSpriteSet(Hero hero, Head head, Body body) {
+    private SpriteSet createCustomSpriteSet(Hero hero, SpriteSet headSprites, SpriteSet bodySprites) {
         SpriteSet spriteSet = new SpriteSet(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
-        copyAndOverlaySprites(head.getSprites().getFront(), body.getSprites().getFront(), spriteSet.getFront(), "front",
-                hero.getId());
-        copyAndOverlaySprites(head.getSprites().getBack(), body.getSprites().getBack(), spriteSet.getBack(), "back",
-                hero.getId());
-        copyAndOverlaySprites(head.getSprites().getLeft(), body.getSprites().getLeft(), spriteSet.getLeft(), "left",
-                hero.getId());
-        copyAndOverlaySprites(head.getSprites().getRight(), body.getSprites().getRight(), spriteSet.getRight(), "right",
-                hero.getId());
+        // Combiner les sprites pour chaque direction
+        combineDirectionalSprites(headSprites.getFront(), bodySprites.getFront(), spriteSet.getFront(), "front", hero.getId());
+        combineDirectionalSprites(headSprites.getBack(), bodySprites.getBack(), spriteSet.getBack(), "back", hero.getId());
+        combineDirectionalSprites(headSprites.getLeft(), bodySprites.getLeft(), spriteSet.getLeft(), "left", hero.getId());
+        combineDirectionalSprites(headSprites.getRight(), bodySprites.getRight(), spriteSet.getRight(), "right", hero.getId());
 
         return spriteSetRepository.save(spriteSet);
     }
 
-    private void copyAndOverlaySprites(List<Sprite> headSprites, List<Sprite> bodySprites, List<Sprite> heroSprites,
-            String direction, Long heroId) {
-        if (headSprites.size() != bodySprites.size()) {
-            throw new IllegalArgumentException(
-                    "Mismatch in sprite counts for head and body for direction: " + direction);
-        }
-
-        String baseUrl = serverConfig.getServerUrl();
-
-        for (int i = 0; i < headSprites.size(); i++) {
-            Sprite headSprite = headSprites.get(i);
-            Sprite bodySprite = bodySprites.get(i);
-
-            String fileName = String.format("hero%d-%s-%d-32x36.png", heroId, direction, i + 1);
+    private void combineDirectionalSprites(List<Sprite> headSprites, List<Sprite> bodySprites, List<Sprite> targetList, String direction, Long heroId) {
+        if (!headSprites.isEmpty() && !bodySprites.isEmpty()) {
+            Sprite headSprite = headSprites.get(0);
+            Sprite bodySprite = bodySprites.get(0);
+            
+            String fileName = String.format("hero%d-%s-1-32x36.png", heroId, direction);
             String outputFilePath = heroDir + "/" + fileName;
-
+            
             try {
                 BufferedImage bodyImage = ImageIO.read(new File(bodySprite.getFilePath()));
                 BufferedImage headImage = ImageIO.read(new File(headSprite.getFilePath()));
-
-                BufferedImage combinedImage = new BufferedImage(bodyImage.getWidth(), bodyImage.getHeight(),
-                        BufferedImage.TYPE_INT_ARGB);
+                
+                BufferedImage combinedImage = new BufferedImage(
+                    bodyImage.getWidth(), 
+                    bodyImage.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB
+                );
+                
                 Graphics g = combinedImage.getGraphics();
                 g.drawImage(bodyImage, 0, 0, null);
                 g.drawImage(headImage, 0, 0, null);
                 g.dispose();
-
+                
                 File outputFile = new File(outputFilePath);
                 ImageIO.write(combinedImage, "png", outputFile);
-
-                Sprite newSprite = new Sprite(fileName, baseUrl + "/api/images/hero/" + fileName,
-                        outputFile.getAbsolutePath());
+                
+                String baseUrl = serverConfig.getServerUrl();
+                Sprite newSprite = new Sprite(
+                    fileName,
+                    baseUrl + "/api/images/hero/" + fileName,
+                    outputFile.getAbsolutePath()
+                );
                 spriteRepository.save(newSprite);
-
-                heroSprites.add(newSprite);
-
+                targetList.add(newSprite);
             } catch (IOException e) {
-                throw new RuntimeException("Error processing sprite: head=" + headSprite.getFilePath() + ", body="
-                        + bodySprite.getFilePath(), e);
+                throw new RuntimeException("Error processing sprite", e);
             }
         }
     }

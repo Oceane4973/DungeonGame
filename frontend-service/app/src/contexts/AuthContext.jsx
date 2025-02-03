@@ -6,10 +6,22 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         const checkAuth = async () => {
-            setIsLoggedIn(UserService.isAuthenticated());
+            const isAuth = UserService.isAuthenticated();
+            setIsLoggedIn(isAuth);
+            
+            if (isAuth) {
+                try {
+                    const userData = await UserService.getUserDetails();
+                    setUser(userData);
+                } catch (error) {
+                    console.error("Erreur lors de la récupération des données utilisateur:", error);
+                }
+            }
+            
             setLoading(false);
         };
 
@@ -19,9 +31,13 @@ export function AuthProvider({ children }) {
     const login = async (username, password) => {
         setLoading(true);
         try {
-            await UserService.login(username, password);
+            const userData = await UserService.login(username, password);
             setIsLoggedIn(true);
-            return true; // Indique que la connexion est réussie
+            setUser({
+                ...userData,
+                id: userData.id
+            });
+            return true;
         } catch (error) {
             alert(error.message);
             return false;
@@ -33,6 +49,7 @@ export function AuthProvider({ children }) {
     const logout = () => {
         UserService.logout();
         setIsLoggedIn(false);
+        setUser(null);
     };
 
     if (loading) {
@@ -40,7 +57,7 @@ export function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

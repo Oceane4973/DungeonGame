@@ -1,5 +1,6 @@
 package com.dungeongame.heroes.dto;
 
+import com.dungeongame.heroes.model.Sprite;
 import lombok.Data;
 
 @Data
@@ -11,6 +12,8 @@ public class HeroDTO {
     private int healthPoints;
     private Long headId;
     private Long bodyId;
+    private Sprite headSprite;
+    private Sprite bodySprite;
 
     public Long getUserId() {
         return userId;
@@ -38,5 +41,13 @@ public class HeroDTO {
 
     public Long getBodyId() {
         return bodyId;
+    }
+
+    public Sprite getHeadSprite() {
+        return headSprite;
+    }
+
+    public Sprite getBodySprite() {
+        return bodySprite;
     }
 }

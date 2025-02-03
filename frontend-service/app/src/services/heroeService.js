@@ -18,7 +18,7 @@ export const heroeService = {
     },
 
     createHero: async (heroData) => {
-        const response = await fetch(API_URL, {
+        const response = await fetch(`${API_URL}/hero`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,8 +32,19 @@ export const heroeService = {
         return response.json();
     },
 
-    getHeroes: async () => {
-        const response = await fetch(API_URL);
+    getHeroes: async (userId) => {
+        const token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : null;
+        
+        if (!token) {
+            throw new Error('Non authentifié');
+        }
+
+        const response = await fetch(`${API_URL}/heroByUserId?userId=${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des héros');
         }

@@ -9,26 +9,34 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ThemeContext, useTheme } from '../../contexts/ThemeContext';
 import { FaSun, FaMoon } from "react-icons/fa";
+import { heroeService } from '../../services/heroeService';
 
 const UserPage = () => {
   const [user, setUser] = useState(null);
+  const [heroes, setHeroes] = useState([]);
   const [error, setError] = useState(null);
+  const [selectedHero, setSelectedHero] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [hoveredHero, setHoveredHero] = useState(null);
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
         const userData = await UserService.getUserDetails();
         setUser(userData);
+        
+        const heroesData = await heroeService.getHeroes(userData.id);
+        console.log("Heroes data:", heroesData);
+        setHeroes(heroesData);
       } catch (err) {
-        setError('Failed to fetch user data');
-        console.error('Error fetching user data:', err);
+        setError(err.message);
       }
     };
 
-    fetchUserData();
+    fetchData();
   }, []);
 
   const handleLogout = () => {
@@ -46,6 +54,11 @@ const UserPage = () => {
         console.error('Erreur lors de la suppression du compte:', error);
       }
     }
+  };
+
+  const handleHeroClick = (hero) => {
+    setSelectedHero(hero);
+    setShowPopup(true);
   };
 
   if (error) return <div className="error-message">{error}</div>;
@@ -171,32 +184,115 @@ const UserPage = () => {
         <div className="separator"></div>
 
         <div className="right-section">
-          <div className="heroes-section info-section">
-            <h2 className="section-title">Mes Héros</h2>
-            <div className="heroes-grid">
-              {user.heroes && user.heroes.length > 0 ? (
-                user.heroes.map(hero => (
-                  <div key={hero.id} className="hero-card">
-                    <img 
-                      src={hero.sprite} 
-                      alt={hero.name} 
-                      className="hero-sprite"
-                    />
-                    <span className="hero-name">{hero.name}</span>
-                    <div className="hero-stats">
-                      <div>⚔️ Attaque: {hero.attack}</div>
-                      <div>❤️ PV: {hero.healthPoints}</div>
-                    </div>
+          <div className="heroes-section">
+            <div className="heroes-content">
+              <h2 className="section-title">Mes Héros</h2>
+              <div className="sprites-grid">
+                {heroes && heroes.map(hero => (
+                  <div 
+                    key={hero.id} 
+                    className="hero-sprite-container" 
+                    onMouseEnter={() => setHoveredHero(hero)}
+                    onMouseLeave={() => setHoveredHero(null)}
+                    style={{ position: 'relative', width: '48px', height: '48px', cursor: 'pointer' }}
+                  >
+                    {hero.bodySprite && (
+                      <img 
+                        src={hero.bodySprite.url}
+                        alt="Body Sprite"
+                        style={{
+                          position: 'absolute',
+                          width: '48px',
+                          height: '48px',
+                          imageRendering: 'pixelated',
+                          zIndex: 1
+                        }}
+                      />
+                    )}
+                    {hero.headSprite && (
+                      <img 
+                        src={hero.headSprite.url} 
+                        alt="Head Sprite"
+                        style={{
+                          position: 'absolute',
+                          width: '48px',
+                          height: '48px',
+                          imageRendering: 'pixelated',
+                          zIndex: 2
+                        }}
+                      />
+                    )}
+                    {hoveredHero === hero && (
+                      <div className="hero-tooltip">
+                        <div className="tooltip-content">
+                          <div className="tooltip-stat">⭐ Niveau {hero.level}</div>
+                          <div className="tooltip-stat">❤️ PV: {hero.healthPoints}</div>
+                          <div className="tooltip-stat">⚔️ ATK: {hero.attack}</div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                ))
-              ) : (
-                <p>Vous n'avez pas encore de héros. Créez-en un !</p>
-              )}
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
       <Footer />
+      {showPopup && selectedHero && (
+        <div className="popup-overlay" onClick={() => setShowPopup(false)}>
+          <div className="popup-content" onClick={e => e.stopPropagation()}>
+            <button className="popup-close" onClick={() => setShowPopup(false)}>×</button>
+            <div className="popup-header">
+              <div className="popup-sprites">
+                {selectedHero.bodySprite && (
+                  <img 
+                    src={selectedHero.bodySprite.url}
+                    alt="Body Sprite"
+                    style={{
+                      position: 'absolute',
+                      width: '96px',
+                      height: '96px',
+                      imageRendering: 'pixelated',
+                      zIndex: 1
+                    }}
+                  />
+                )}
+                {selectedHero.headSprite && (
+                  <img 
+                    src={selectedHero.headSprite.url}
+                    alt="Head Sprite"
+                    style={{
+                      position: 'absolute',
+                      width: '96px',
+                      height: '96px',
+                      imageRendering: 'pixelated',
+                      zIndex: 2
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="popup-body">
+              <h3>Statistiques du héros</h3>
+              <div className="hero-stats">
+                <div className="stat-item">
+                  <span className="stat-label">Niveau</span>
+                  <span className="stat-value">⭐ {selectedHero.level}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Points de vie</span>
+                  <span className="stat-value">❤️ {selectedHero.healthPoints}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Attaque</span>
+                  <span className="stat-value">⚔️ {selectedHero.attack}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

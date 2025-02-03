@@ -14,6 +14,14 @@ const HeroeCreationPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+    }, [user, navigate]);
 
     useEffect(() => {
         const fetchSprites = async () => {
@@ -33,9 +41,24 @@ const HeroeCreationPage = () => {
         fetchSprites();
     }, []);
 
+    const generateRandomHeroName = () => {
+        const prefixes = ['Brave', 'Vaillant', 'Mystérieux', 'Légendaire', 'Intrépide', 'Redoutable', 'Sage'];
+        const suffixes = ['Guerrier', 'Mage', 'Paladin', 'Archer', 'Chevalier', 'Aventurier', 'Héros'];
+        
+        const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+        
+        return `${randomPrefix} ${randomSuffix}`;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        if (!user || !user.id) {
+            setError('Vous devez être connecté pour créer un héros');
+            return;
+        }
+
         if (!selectedHead || !selectedBody) {
             setError('Veuillez sélectionner une tête et un corps');
             return;
@@ -43,12 +66,18 @@ const HeroeCreationPage = () => {
 
         setLoading(true);
         try {
-            const hero = await heroeService.createHero({
+            const heroData = {
                 headId: selectedHead.id,
                 bodyId: selectedBody.id,
-            });
+                name: generateRandomHeroName(),
+                level: Math.floor(Math.random() * 5) + 1,
+                attack: Math.floor(Math.random() * 15) + 5,
+                healthPoints: Math.floor(Math.random() * 50) + 75,
+                userId: user.id
+            };
             
-            navigate('/heroes');
+            const hero = await heroeService.createHero(heroData);
+            navigate('/hero');
         } catch (err) {
             setError(err.message);
         } finally {

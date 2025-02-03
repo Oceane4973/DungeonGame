@@ -29,6 +29,14 @@ public class Hero {
     @Min(0)
     private int healthPoints;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "head_sprite_id")
+    private Sprite headSprite;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "body_sprite_id")
+    private Sprite bodySprite;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "sprite_set_id")
     private SpriteSet sprites;

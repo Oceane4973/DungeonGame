@@ -53,22 +53,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.2s ease;
-    border: 2px solid #ddd;
+    border: 2px solid transparent;
     border-radius: 8px;
     background-color: white;
     min-height: 64px;
     min-width: 64px;
 }
 
-.sprite-item:hover {
-    background-color: #f5f5f5;
-    border-color: #bbb;
-}
-
 .sprite-item.selected {
-    border-color: #4a90e2;
-    background-color: #e3f2fd;
+    border-color: #60A5FA;
+    background-color: rgba(96, 165, 250, 0.2);
 }
 
 .sprite-item img {
@@ -163,7 +157,6 @@
 }
 
 .heroe-creation-page h2 {
-    font-size: 2.5rem;
     margin-bottom: 2rem;
     margin-top: 2rem;
     text-align: center;
@@ -171,11 +164,11 @@
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     background-color: rgba(255, 255, 255, 0.7);
-    padding: 1rem 2rem;
+    padding: 0.8rem 1.5rem;
     border-radius: 12px;
     backdrop-filter: blur(5px);
     display: inline-block;
-    margin-left: 7%;
+    margin-left: 25%;
     margin-right: auto;
 }
 
@@ -211,7 +204,7 @@
 }
 
 .sprite-item:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    /* Supprimer ces styles */
 }
 
 .sprite-item.selected {
@@ -355,4 +348,13 @@ body.dark .create-hero-btn:hover {
 /* Pour le thème clair */
 body.light .preview-sprite {
     background: rgba(0, 0, 0, 0.05);
+}
+
+body.dark .sprite-item.selected {
+    border-color: #60A5FA;
+    background-color: rgba(96, 165, 250, 0.2);
+}
+
+body.dark .sprite-item:hover {
+    /* Supprimer ces styles */
 }

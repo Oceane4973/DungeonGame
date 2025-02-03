@@ -123,6 +123,11 @@ class UserService {
             throw error;
         }
     }
+
+    getUserId() {
+        const user = this.getCurrentUser();
+        return user?.id;
+    }
 }
 
 const userService = new UserService();

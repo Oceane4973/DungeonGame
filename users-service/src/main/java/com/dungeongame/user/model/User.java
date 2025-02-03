@@ -86,4 +86,12 @@ public class User implements UserDetails {
     public void setGold(int gold) {
         this.gold = gold;
     }
+
+    public Long getId() {
+        return id.longValue();
+    }
+
+    public void setId(Long id) {
+        this.id = id.intValue();
+    }
 }
