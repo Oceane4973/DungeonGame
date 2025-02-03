@@ -86,7 +86,7 @@ const HeroeCreationPage = () => {
             <Header />
             <main className="heroe-creation-page">
                 <div className="container">
-                    <h2>Création d'un nouveau héros</h2>
+                    <h2>Création d'un nouveau héro</h2>
                     <form onSubmit={handleSubmit}>
                         <div className="sprite-selection">
                             <div className="sprite-section">
@@ -123,17 +123,19 @@ const HeroeCreationPage = () => {
                         <div className="preview-section">
                             <h3>Aperçu</h3>
                             <div className="preview-container">
-                                {selectedHead && selectedBody && (
+                                {selectedHead && selectedBody ? (
                                     <div className="preview-sprite">
                                         {renderSprite(selectedBody)}
                                         {renderSprite(selectedHead)}
                                     </div>
+                                ) : (
+                                    <p className="preview-hint">Sélectionnez une tête et un corps pour voir l'aperçu de votre héro</p>
                                 )}
                             </div>
                         </div>
 
                         <button type="submit" className="create-hero-btn" disabled={loading || !selectedHead || !selectedBody}>
-                            {loading ? "Création en cours..." : "Créer le héros"}
+                            {loading ? "Création en cours..." : "Créer mon héro"}
                         </button>
                     </form>
                 </div>

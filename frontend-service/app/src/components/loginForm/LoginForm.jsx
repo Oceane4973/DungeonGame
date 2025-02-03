@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./LoginForm.css";
 
 function LoginForm() {
@@ -62,7 +62,9 @@ function LoginForm() {
         <button type="submit" disabled={loading}>
           {loading ? "Connexion..." : "Se connecter"}
         </button>
-        <a href="/signup" className="link-button">Pas encore inscrit ? S'inscrire</a>
+        <Link to="/signup" className="link-button">
+          Pas encore inscrit ? S'inscrire
+        </Link>
       </form>
     </div>
   );

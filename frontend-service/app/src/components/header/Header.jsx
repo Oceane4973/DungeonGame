@@ -45,23 +45,30 @@ function Header() {
                     }}>DungeonGame</span>
                 </div>
             </Link>
+            
             {isLoggedIn && (
-                <div className="header-right">
-                    <div className="gold-display">
-                        <img 
-                            src={goldIcon} 
-                            alt="Gold" 
-                            className="gold-icon-small"
-                            style={{ width: '32px', height: '32px' }}
-                        />
-                        <span className="gold-amount-header">{user ? user.gold || 0 : 0}</span>
+                <>
+                    <nav className="header-nav">
+                        <Link to="/createHero">Création du héro</Link>
+                        <Link to="/hero">Sélection du héro</Link>
+                    </nav>
+                    <div className="header-right">
+                        <div className="gold-display">
+                            <img 
+                                src={goldIcon} 
+                                alt="Gold" 
+                                className="gold-icon-small"
+                                style={{ width: '32px', height: '32px' }}
+                            />
+                            <span className="gold-amount-header">{user ? user.gold || 0 : 0}</span>
+                        </div>
+                        <div className="profile-icon">
+                            <Link to="/profile" className="profile-icon">
+                                <FaUserCircle size={24} color="white" className="hover:opacity-80 transition-opacity" />
+                            </Link>
+                        </div>
                     </div>
-                    <div className="profile-icon">
-                        <Link to="/profile" className="profile-icon">
-                            <FaUserCircle size={24} color="white" className="hover:opacity-80 transition-opacity" />
-                        </Link>
-                    </div>
-                </div>
+                </>
             )}
         </header>
     );

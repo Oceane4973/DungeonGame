@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import UserService from "../../services/userService";
 import "./SignupForm.css";
 
@@ -85,7 +85,9 @@ function SignupForm() {
                 <button type="submit" disabled={loading}>
                     {loading ? "Inscription..." : "S'inscrire"}
                 </button>
-                <a href="/login" className="link-button">Déjà inscrit ? Se connecter</a>
+                <Link to="/login" className="link-button">
+                    Déjà inscrit ? Se connecter
+                </Link>
             </form>
         </div>
     );
