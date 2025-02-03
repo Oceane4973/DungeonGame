@@ -7,6 +7,8 @@ import HeroeCreationPage from "./pages/HeroePage/HeroeCreationPage";
 import DungeonPage from "./pages/DungeonPage/DungeonPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import UserPage from './pages/UserPage/UserPage';
+import { ThemeProvider } from "./contexts/ThemeContext";
+import './assets/css/global.css';
 
 function PrivateRoute({ children }) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -15,24 +17,26 @@ function PrivateRoute({ children }) {
 
 function RedirectRoute() {
   const { isLoggedIn } = useContext(AuthContext);
-  return isLoggedIn ? <Navigate to="/hero" /> : <Navigate to="/login" />;
+  return isLoggedIn ? <Navigate to="/login" /> : <Navigate to="/login" />;
 }
 
 function App() {
   return (
-      <Router>
-          <AuthProvider>
-              <Routes>
-                  <Route path="/" element={<RedirectRoute />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/signup" element={<SignupPage />} /> 
-                  <Route path="/hero" element={<PrivateRoute><HeroeSelectionPage /></PrivateRoute>} />
-                  <Route path="/createHero" element={<PrivateRoute><HeroeCreationPage /></PrivateRoute>} />
-                  <Route path="/dungeon" element={<PrivateRoute><DungeonPage /></PrivateRoute>} />
-                  <Route path="/profile" element={<PrivateRoute><UserPage /></PrivateRoute>} />
-              </Routes>
-          </AuthProvider>
-      </Router>
+    <Router>
+      <AuthProvider>
+        <ThemeProvider>
+          <Routes>
+            <Route path="/" element={<RedirectRoute />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} /> 
+            <Route path="/hero" element={<PrivateRoute><HeroeSelectionPage /></PrivateRoute>} />
+            <Route path="/createHero" element={<PrivateRoute><HeroeCreationPage /></PrivateRoute>} />
+            <Route path="/dungeon" element={<PrivateRoute><DungeonPage /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><UserPage /></PrivateRoute>} />
+          </Routes>
+        </ThemeProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

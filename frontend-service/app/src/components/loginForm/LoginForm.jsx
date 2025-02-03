@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
@@ -9,8 +9,19 @@ function LoginForm() {
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // Récupérer les credentials sauvegardés au chargement du composant
+    const savedCredentials = localStorage.getItem('savedCredentials');
+    if (savedCredentials) {
+      setCredentials(JSON.parse(savedCredentials));
+    }
+  }, []);
+
   const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    const newCredentials = { ...credentials, [e.target.name]: e.target.value };
+    setCredentials(newCredentials);
+    // Sauvegarder les credentials à chaque modification
+    localStorage.setItem('savedCredentials', JSON.stringify(newCredentials));
   };
 
   const handleSubmit = async (e) => {

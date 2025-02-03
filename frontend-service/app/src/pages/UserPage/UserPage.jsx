@@ -7,12 +7,15 @@ import './UserPage.css';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
+import { ThemeContext, useTheme } from '../../contexts/ThemeContext';
+import { FaSun, FaMoon } from "react-icons/fa";
 
 const UserPage = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -54,30 +57,42 @@ const UserPage = () => {
       <div className="profile-card">
         <div className="left-section">
           <div className="profile-header">
-            <div className="profile-avatar">
-              <span className="avatar-letter">{user.username.charAt(0).toUpperCase()}</span>
+            <div className="profile-banner" style={{ paddingTop: '20px', position: 'relative' }}>
+              <img src={require('../../assets/large_panel_1024x1024.png')} alt="banner" />
+              <h1 style={{
+                position: 'absolute',
+                width: '100%',
+                textAlign: 'center',
+                color: '#111111',
+                fontSize: '22px',
+                fontFamily: "'VT323', monospace",
+                letterSpacing: '1px',
+                top: '55%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                paddingTop: '1px',
+                textTransform: 'uppercase',
+                margin: 0,
+                textShadow: '0 0 1px rgba(0,0,0,0.3)'
+              }}>{user.username}</h1>
             </div>
-            <h1 className="username">{user.username}</h1>
-            <button onClick={handleLogout} className="logout-btn">
-              Se déconnecter
-            </button>
           </div>
 
           <div className="gold-section">
             <div className="gold-content">
               <div className="gold-label">
-                <img src={goldIcon} alt="Gold" className="gold-icon" />
-                <span className="gold-text">Gold Balance</span>
+                <img src={goldIcon} alt="Or" className="gold-icon" />
+                <span className="gold-text">Solde d'or</span>
               </div>
               <span className="gold-amount">{user.gold}</span>
             </div>
           </div>
 
           <div className="account-section">
-            <h2 className="account-title">Account Details</h2>
+            <h2 className="account-title">Détails du compte</h2>
             <div className="account-details">
               <div className="detail-row">
-                <span className="detail-label">Created on:</span>
+                <span className="detail-label">Créé le :</span>
                 <span className="detail-value">
                   {new Date().toLocaleDateString('fr-FR', {
                     year: 'numeric',
@@ -87,7 +102,7 @@ const UserPage = () => {
                 </span>
               </div>
               <div className="detail-row">
-                <span className="detail-label">Last updated:</span>
+                <span className="detail-label">Dernière mise à jour :</span>
                 <span className="detail-value">
                   {new Date().toLocaleDateString('fr-FR', {
                     year: 'numeric',
@@ -97,6 +112,59 @@ const UserPage = () => {
                 </span>
               </div>
             </div>
+          </div>
+
+          <div className="preferences-section">
+            <h2 className="preferences-title">Préférences</h2>
+            <div className="preferences-content">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <span style={{ fontSize: '16px', fontWeight: '500' }}>Thème :</span>
+                <button 
+                  onClick={toggleTheme}
+                  style={{ 
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {theme === 'dark' ? 
+                    <FaSun size={24} color="#FFB800" /> : 
+                    <FaMoon size={24} color="#4A4A4A" />
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            marginTop: 'auto',
+            paddingTop: '20px'
+          }}>
+            <button 
+              onClick={handleLogout} 
+              className="logout-btn"
+              style={{
+                backgroundColor: '#F8F9FC',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                color: '#4A5568',
+                fontWeight: '600',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                transition: 'background-color 0.2s',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Se déconnecter
+            </button>
           </div>
         </div>
 
