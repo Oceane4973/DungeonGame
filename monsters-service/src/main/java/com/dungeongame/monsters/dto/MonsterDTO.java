@@ -1,4 +1,4 @@
-package com.donjon.dto;
+package com.dungeongame.monsters.dto;
 
 public class MonsterDTO {
     private String name;

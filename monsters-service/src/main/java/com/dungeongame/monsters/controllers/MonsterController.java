@@ -1,12 +1,14 @@
-package com.donjon.controllers;
+package com.dungeongame.monsters.controllers;
 
-import com.donjon.dto.MonsterDTO;
-import com.donjon.services.MonsterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.dungeongame.monsters.dto.MonsterDTO;
+import com.dungeongame.monsters.services.MonsterService;
+
 import java.util.List;
 
 @RestController

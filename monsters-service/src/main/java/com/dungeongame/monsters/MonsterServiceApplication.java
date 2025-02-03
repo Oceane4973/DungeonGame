@@ -1,4 +1,4 @@
-package com.donjon;
+package com.dungeongame.monsters;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

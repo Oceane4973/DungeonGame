@@ -1,6 +1,6 @@
-package com.donjon.services;
+package com.dungeongame.monsters.services;
 
-import com.donjon.dto.MonsterDTO;
+import com.dungeongame.monsters.dto.MonsterDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.Resource;
