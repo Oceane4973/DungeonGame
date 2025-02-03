@@ -10,9 +10,7 @@ console.log(API_PORT, API_URL)
 app.use(express.json());
 
 app.use(cors({
-  origin: API_URL,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: 'http://localhost:8080'
 }));
 
 const dungeonRoutes = require('./routes/dungeon.js');
