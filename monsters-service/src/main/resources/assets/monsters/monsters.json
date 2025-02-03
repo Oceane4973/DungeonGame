@@ -1,0 +1,23 @@
+{
+  "dragon": {
+    "name": "Dragon",
+    "pv": 100,
+    "attack": 20,
+    "level": 5,
+    "imageUrl": "assets/monsters/images/dragon.png"
+  },
+  "goblin": {
+    "name": "Goblin",
+    "pv": 30,
+    "attack": 8,
+    "level": 1,
+    "imageUrl": "assets/monsters/images/goblin.png"
+  },
+  "troll": {
+    "name": "Troll",
+    "pv": 80,
+    "attack": 15,
+    "level": 3,
+    "imageUrl": "assets/monsters/images/troll.png"
+  }
+}
