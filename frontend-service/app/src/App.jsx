@@ -28,20 +28,21 @@ function App() {
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
+        console.log("Début de l'écoute des messages RabbitMQ.")
         // Écoute des messages des différentes queues RabbitMQ
-        socket.on("rabbitmq-users-to-front-gold", (message) => {
-            console.log("Message reçu de rabbitmq-users-to-front-gold:", message);
-            setMessages((prev) => [...prev, { queue: "rabbitmq-users-to-front-gold", message }]);
+        socket.on("rabbitmq-users-to-frontend-gold", (message) => {
+            console.log("Message reçu de rabbitmq-users-to-frontend-gold:", message);
+            setMessages((prev) => [...prev, { queue: "rabbitmq-users-to-frontend-gold", message }]);
         });
 
-        socket.on("rabbitmq-heroes-to-front-health", (message) => {
-            console.log("Message reçu de rabbitmq-heroes-to-front-health:", message);
-            setMessages((prev) => [...prev, { queue: "rabbitmq-heroes-to-front-health", message }]);
+        socket.on("rabbitmq-heroes-to-frontend-health", (message) => {
+            console.log("Message reçu de rabbitmq-heroes-to-frontend-health:", message);
+            setMessages((prev) => [...prev, { queue: "rabbitmq-heroes-to-frontend-health", message }]);
         });
 
         return () => {
-            socket.off("rabbitmq-users-to-front-gold");
-            socket.off("rabbitmq-heroes-to-front-health");
+            socket.off("rabbitmq-users-to-frontend-gold");
+            socket.off("rabbitmq-heroes-to-frontend-health");
         };
     }, []);
 
