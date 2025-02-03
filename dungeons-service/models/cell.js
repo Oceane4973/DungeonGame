@@ -47,6 +47,8 @@ const Cell = {
     TREE_1: { name: "tree-1.png", url: `${BASE_URL}/tree-1.png` },
     TREE_2: { name: "tree-2.png", url: `${BASE_URL}/tree-2.png` },
     END_DUNGEON : {name : "end_dungeon.png", url: `${BASE_URL}/end_dungeon.png` },
+    START_DUNGEON : null,
+    NOTHING : null,
 };
 
 module.exports = Cell;
