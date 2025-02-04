@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const DungeonCanva = ({ dungeonData, imageCache, hero, position }) => {
+const DungeonCanva = ({ dungeonData, imageCache, hero, position, direction }) => {
     const canvasRef = useRef(null);
 
     useEffect(() => {
@@ -12,7 +12,7 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, position }) => {
 
             return () => window.removeEventListener('resize', handleResize);
         }
-    }, [dungeonData, imageCache, hero, position]);
+    }, [dungeonData, imageCache, hero, position, direction]);
 
     const drawDungeon = () => {
         const canvas = canvasRef.current;
@@ -49,11 +49,27 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, position }) => {
             const heroY = position.y * cellSize;
 
             bodyImage.onload = () => {
-                ctx.drawImage(bodyImage, heroX, heroY, cellSize, cellSize);
+                ctx.save();
+                if (direction === 'left') {
+                    ctx.translate(heroX + cellSize, heroY);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(bodyImage, 0, 0, cellSize, cellSize);
+                } else {
+                    ctx.drawImage(bodyImage, heroX, heroY, cellSize, cellSize);
+                }
+                ctx.restore();
             };
             
             headImage.onload = () => {
-                ctx.drawImage(headImage, heroX, heroY, cellSize, cellSize);
+                ctx.save();
+                if (direction === 'left') {
+                    ctx.translate(heroX + cellSize, heroY);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(headImage, 0, 0, cellSize, cellSize);
+                } else {
+                    ctx.drawImage(headImage, heroX, heroY, cellSize, cellSize);
+                }
+                ctx.restore();
             };
         }
     };

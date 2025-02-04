@@ -17,6 +17,11 @@ function DungeonPage() {
     const [imageCache, setImageCache] = useState({});
     const [hero, setHero] = useState(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [isJumping, setIsJumping] = useState(false);
+    const [jumpHeight, setJumpHeight] = useState(0);
+    const JUMP_MAX_HEIGHT = 2; // Hauteur maximale du saut en cellules
+    const GRAVITY_SPEED = 100; // Vitesse de la gravité en ms
+    const [direction, setDirection] = useState('right');
 
     const fetchDungeon = async () => {
         try {
@@ -78,24 +83,94 @@ function DungeonPage() {
         }
     }, [dungeonData]);
 
-    // Ajout de la gestion des déplacements
+    // Gestion de la gravité
+    useEffect(() => {
+        if (!dungeonData?.dungeon || !hero) return;
+
+        const applyGravity = () => {
+            if (isJumping) return;
+
+            const newPosition = { ...position };
+            const cellBelow = newPosition.y + 1 < dungeonData.dungeon.length ? 
+                dungeonData.dungeon[newPosition.y + 1][newPosition.x] : null;
+
+            if (cellBelow && cellBelow !== 'WALL' && cellBelow !== 'GROUND_TOP' 
+                && cellBelow !== 'GROUND_FULL_1' && cellBelow !== 'GROUND_FULL_2' 
+                && cellBelow !== 'GROUND_FULL_3' && cellBelow !== 'GROUND_STONE_1' 
+                && cellBelow !== 'GROUND_STONE_2') {
+                setPosition(prev => ({ ...prev, y: prev.y + 1 }));
+            }
+        };
+
+        const gravityInterval = setInterval(applyGravity, GRAVITY_SPEED);
+        return () => clearInterval(gravityInterval);
+    }, [position, dungeonData, hero, isJumping]);
+
+    // Gestion du saut
+    useEffect(() => {
+        if (!isJumping || !dungeonData?.dungeon) return;
+
+        const jumpInterval = setInterval(() => {
+            if (jumpHeight >= JUMP_MAX_HEIGHT) {
+                setIsJumping(false);
+                setJumpHeight(0);
+                return;
+            }
+
+            const newPosition = { ...position };
+            const cellAbove = newPosition.y - 1 >= 0 ? 
+                dungeonData.dungeon[newPosition.y - 1][newPosition.x] : null;
+
+            if (cellAbove && cellAbove !== 'WALL') {
+                setPosition(prev => ({ ...prev, y: prev.y - 1 }));
+                setJumpHeight(prev => prev + 1);
+            } else {
+                setIsJumping(false);
+                setJumpHeight(0);
+            }
+        }, 150); // Vitesse du saut
+
+        return () => clearInterval(jumpInterval);
+    }, [isJumping, jumpHeight, position, dungeonData]);
+
+    // Modification du gestionnaire de touches
     useEffect(() => {
         const handleKeyPress = (e) => {
             if (!dungeonData?.dungeon || !hero) return;
 
             const newPosition = { ...position };
-            switch (e.key) {
-                case 'ArrowUp':
+            switch (e.key.toLowerCase()) {
+                case 'arrowup':
+                case 'z':
                     if (position.y > 0) newPosition.y--;
+                    setDirection('back');
                     break;
-                case 'ArrowDown':
+                case 'arrowdown':
+                case 's':
                     if (position.y < dungeonData.dungeon.length - 1) newPosition.y++;
+                    setDirection('front');
                     break;
-                case 'ArrowLeft':
+                case 'arrowleft':
+                case 'q':
                     if (position.x > 0) newPosition.x--;
+                    setDirection('left');
                     break;
-                case 'ArrowRight':
+                case 'arrowright':
+                case 'd':
                     if (position.x < dungeonData.dungeon[0].length - 1) newPosition.x++;
+                    setDirection('right');
+                    break;
+                case ' ': // Barre d'espace
+                    // Vérifier si le personnage est sur le sol
+                    const cellBelow = position.y + 1 < dungeonData.dungeon.length ? 
+                        dungeonData.dungeon[position.y + 1][position.x] : null;
+                    if (cellBelow === 'WALL' || cellBelow === 'GROUND_TOP' 
+                        || cellBelow === 'GROUND_FULL_1' || cellBelow === 'GROUND_FULL_2' 
+                        || cellBelow === 'GROUND_FULL_3' || cellBelow === 'GROUND_STONE_1' 
+                        || cellBelow === 'GROUND_STONE_2') {
+                        setIsJumping(true);
+                        return;
+                    }
                     break;
                 default:
                     return;
@@ -110,7 +185,7 @@ function DungeonPage() {
 
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [position, dungeonData, hero]);
+    }, [position, dungeonData, hero, isJumping]);
 
     const renderBackgroundLayers = () => {
         if (!dungeonData?.background?.layers) return null;
@@ -138,6 +213,7 @@ function DungeonPage() {
                             imageCache={imageCache}
                             hero={hero}
                             position={position}
+                            direction={direction}
                         />
                     </>
                 )}
@@ -151,7 +227,7 @@ function DungeonPage() {
                             <p>Niveau: {hero.level} | PV: {hero.healthPoints} | ATK: {hero.attack}</p>
                         </div>
                     )}
-                    <p>Utilisez les flèches du clavier pour vous déplacer</p>
+                    <p>Utilisez les flèches du clavier ou ZQSD pour vous déplacer, et ESPACE pour sauter</p>
                 </div>
             </div>
             <Footer />
