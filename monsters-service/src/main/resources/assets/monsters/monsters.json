@@ -1,0 +1,232 @@
+{
+    "monstre1": {
+        "name": "monstre1",
+        "pv": 50,
+        "attack": 10,
+        "level": 2,
+        "sprites": [
+            {
+                "name": "spriteID1-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID1-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID1-1-48x48.png"
+            },
+            {
+                "name": "spriteID1-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID1-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID1-2-48x48.png"
+            },
+            {
+                "name": "spriteID1-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID1-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID1-3-48x48.png"
+            }
+        ]
+    },
+    "monstre2": {
+        "name": "monstre2",
+        "pv": 100,
+        "attack": 20,
+        "level": 5,
+        "sprites": [
+            {
+                "name": "spriteID2-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID2-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID2-1-48x48.png"
+            },
+            {
+                "name": "spriteID2-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID2-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID2-2-48x48.png"
+            },
+            {
+                "name": "spriteID2-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID2-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID2-3-48x48.png"
+            }
+        ]
+    },
+    "monstre3": {
+        "name": "monstre3",
+        "pv": 150,
+        "attack": 3,
+        "level": 4,
+        "sprites": [
+            {
+                "name": "spriteID3-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID3-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID3-1-48x48.png"
+            },
+            {
+                "name": "spriteID3-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID3-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID3-2-48x48.png"
+            },
+            {
+                "name": "spriteID3-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID3-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID3-3-48x48.png"
+            }
+        ]
+    },
+    "monstre4": {
+        "name": "monstre4",
+        "pv": 70,
+        "attack": 30,
+        "level": 8,
+        "sprites": [
+            {
+                "name": "spriteID4-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID4-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID4-1-48x48.png"
+            },
+            {
+                "name": "spriteID4-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID4-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID4-2-48x48.png"
+            },
+            {
+                "name": "spriteID4-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID4-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID4-3-48x48.png"
+            }
+        ]
+    },
+    "monstre5": {
+        "name": "monstre5",
+        "pv": 150,
+        "attack": 60,
+        "level": 10,
+        "sprites": [
+            {
+                "name": "spriteID5-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID5-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID5-1-48x48.png"
+            },
+            {
+                "name": "spriteID5-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID5-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID5-2-48x48.png"
+            },
+            {
+                "name": "spriteID5-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID5-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID5-3-48x48.png"
+            }
+        ]
+    },
+    "monstre6": {
+        "name": "monstre6",
+        "pv": 170,
+        "attack": 20,
+        "level": 5,
+        "sprites": [
+            {
+                "name": "spriteID6-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID6-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID6-1-48x48.png"
+            },
+            {
+                "name": "spriteID6-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID6-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID6-2-48x48.png"
+            },
+            {
+                "name": "spriteID6-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID6-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID6-3-48x48.png"
+            }
+        ]
+    },
+    "monstre7": {
+        "name": "monstre7",
+        "pv": 100,
+        "attack": 20,
+        "level": 5,
+        "sprites": [
+            {
+                "name": "spriteID7-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID7-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID7-1-48x48.png"
+            },
+            {
+                "name": "spriteID7-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID7-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID7-2-48x48.png"
+            },
+            {
+                "name": "spriteID7-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID7-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID7-3-48x48.png"
+            }
+        ]
+    },
+    "monstre8": {
+        "name": "monstre8",
+        "pv": 60,
+        "attack": 10,
+        "level": 3,
+        "sprites": [
+            {
+                "name": "spriteID8-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID8-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID8-1-48x48.png"
+            },
+            {
+                "name": "spriteID8-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID8-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID8-2-48x48.png"
+            },
+            {
+                "name": "spriteID8-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID8-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID8-3-48x48.png"
+            }
+        ]
+    },
+    "monstre9": {
+        "name": "monstre9",
+        "pv": 60,
+        "attack": 15,
+        "level": 4,
+        "sprites": [
+            {
+                "name": "spriteID9-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID9-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID9-1-48x48.png"
+            },
+            {
+                "name": "spriteID9-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID9-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID9-2-48x48.png"
+            },
+            {
+                "name": "spriteID9-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID9-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID9-3-48x48.png"
+            }
+        ]
+    },
+    "monstre10": {
+        "name": "monstre10",
+        "pv": 150,
+        "attack": 20,
+        "level": 4,
+        "sprites": [
+            {
+                "name": "spriteID10-1-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID10-1-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID10-1-48x48.png"
+            },
+            {
+                "name": "spriteID10-2-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID10-2-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID10-2-48x48.png"
+            },
+            {
+                "name": "spriteID10-3-48x48.png",
+                "imagePath": "resources/assets/monsters/spriteID10-3-48x48.png",
+                "url": "http://localhost:8085/api/monsters/images/spriteID10-3-48x48.png"
+            }
+        ]
+    }
+}

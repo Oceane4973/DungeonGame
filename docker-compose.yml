@@ -98,6 +98,15 @@ services:
     networks:
       - dungeon-game
 
+  dungeon-game-monsters-service:
+    build:
+      context: ./monsters-service
+    container_name: dungeon-game-monsters-service
+    ports:
+      - "${SERVICE_MONSTERS_PORT}:8080"
+    networks:
+      - dungeon-game
+
   dungeon-game-dungeon-service:
     image: node:23-bullseye
     container_name: dungeon-game-dungeon-service
