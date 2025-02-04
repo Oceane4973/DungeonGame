@@ -49,5 +49,24 @@ export const heroeService = {
             throw new Error('Erreur lors de la récupération des héros');
         }
         return response.json();
+    },
+
+    getHeroById: async (heroId) => {
+        const token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : null;
+        
+        if (!token) {
+            throw new Error('Non authentifié');
+        }
+
+        const response = await fetch(`${API_URL}/heroById?id=${heroId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération du héros');
+        }
+        return response.json();
     }
 };

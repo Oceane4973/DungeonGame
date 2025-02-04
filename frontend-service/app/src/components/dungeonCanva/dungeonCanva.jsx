@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const DungeonCanva = ({ dungeonData, imageCache }) => {
+const DungeonCanva = ({ dungeonData, imageCache, hero, position }) => {
     const canvasRef = useRef(null);
 
     useEffect(() => {
@@ -12,7 +12,7 @@ const DungeonCanva = ({ dungeonData, imageCache }) => {
 
             return () => window.removeEventListener('resize', handleResize);
         }
-    }, [dungeonData, imageCache]);
+    }, [dungeonData, imageCache, hero, position]);
 
     const drawDungeon = () => {
         const canvas = canvasRef.current;
@@ -37,10 +37,37 @@ const DungeonCanva = ({ dungeonData, imageCache }) => {
                 }
             });
         });
+
+        if (hero && hero.bodySprite && hero.headSprite) {
+            const bodyImage = new Image();
+            const headImage = new Image();
+            
+            bodyImage.src = hero.bodySprite.url;
+            headImage.src = hero.headSprite.url;
+
+            const heroX = position.x * cellSize;
+            const heroY = position.y * cellSize;
+
+            bodyImage.onload = () => {
+                ctx.drawImage(bodyImage, heroX, heroY, cellSize, cellSize);
+            };
+            
+            headImage.onload = () => {
+                ctx.drawImage(headImage, heroX, heroY, cellSize, cellSize);
+            };
+        }
     };
 
     return (
-        <canvas ref={canvasRef} className="dungeon-canvas" />
+        <canvas 
+            ref={canvasRef} 
+            className="dungeon-canvas"
+            style={{
+                imageRendering: 'pixelated',
+                maxWidth: '100%',
+                maxHeight: '70vh'
+            }}
+        />
     );
 };
 

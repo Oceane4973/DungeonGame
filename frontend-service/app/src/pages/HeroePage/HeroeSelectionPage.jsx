@@ -109,7 +109,7 @@ function HeroPage() {
                                         </div>
                                         <button 
                                             className="select-hero-btn"
-                                            onClick={() => navigate("/dungeon")}
+                                            onClick={() => navigate(`/dungeon?heroId=${hero.id}`)}
                                         >
                                             Choisir ce héros
                                         </button>
