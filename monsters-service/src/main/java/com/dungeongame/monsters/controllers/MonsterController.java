@@ -1,6 +1,7 @@
 package com.dungeongame.monsters.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.dungeongame.monsters.dto.MonsterDTO;
 import com.dungeongame.monsters.services.MonsterService;
+
+import io.jsonwebtoken.io.IOException;
 
 import java.util.List;
 
@@ -28,12 +31,22 @@ public class MonsterController {
         return ResponseEntity.ok(monsterService.getMonster(name));
     }
 
-    @GetMapping("/{name}/image")
-    public ResponseEntity<Resource> getMonsterImage(@PathVariable String name) {
-        Resource image = monsterService.getMonsterImage(name);
-        return ResponseEntity.ok()
-            .contentType(MediaType.IMAGE_PNG)
-            .body(image);
+    @GetMapping("/images/{imageName}")
+    public ResponseEntity<Resource> getMonsterSprite(@PathVariable String imageName) {
+        try {
+            // Accéder à l'image dans le dossier resources/assets/monsters/
+            Resource image = new ClassPathResource("assets/monsters/" + imageName);
+
+            if (image.exists() && image.isReadable()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_PNG)
+                        .body(image);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/random/{nb}")

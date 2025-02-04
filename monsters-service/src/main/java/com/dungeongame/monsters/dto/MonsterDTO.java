@@ -1,11 +1,13 @@
 package com.dungeongame.monsters.dto;
 
+import java.util.List;
+
 public class MonsterDTO {
     private String name;
     private Integer pv;
     private Integer attack;
     private Integer level;
-    private String imageUrl;
+    private List<SpriteDTO> sprites;
 
     // Constructeurs
     public MonsterDTO() {}
@@ -43,11 +45,11 @@ public class MonsterDTO {
         this.level = level;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public List<SpriteDTO> getSprites() {
+        return sprites;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setSprites(List<SpriteDTO> sprites) {
+        this.sprites = sprites;
     }
 }
