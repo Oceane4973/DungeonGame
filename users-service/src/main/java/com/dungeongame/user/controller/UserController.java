@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RequestMapping("/api/users")
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class UserController {
     @GetMapping("/me")
     public ResponseEntity<User> authenticatedUser() {

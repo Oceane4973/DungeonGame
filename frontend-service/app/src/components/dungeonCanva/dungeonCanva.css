@@ -1,0 +1,8 @@
+.dungeon-canvas {
+    position: relative;
+    bottom: 60px;
+    left: 0;
+    height: auto;
+    margin-bottom: 60px;
+    max-height: 100vh;
+}

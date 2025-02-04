@@ -69,4 +69,4 @@ Ce projet a pour but de créer un jeu sur navigateur en utilisant une architectu
 
 Pour démarrer le projet, suivre ces étapes :
 - Configurer les différents services en suivant les étapes définis dans le README
-- Démarrer les conteneurs avec la commande `docker compose up -d`
+- Démarrer les conteneurs avec la commande `docker compose up -d --build`

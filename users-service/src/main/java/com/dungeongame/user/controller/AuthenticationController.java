@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthenticationController {
     @Autowired
     private JwtService jwtService;
@@ -52,6 +52,7 @@ public class AuthenticationController {
             String jwtToken = jwtService.generateToken(authenticatedUser);
 
             LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setId(authenticatedUser.getId());
             loginResponse.setToken(jwtToken);
             loginResponse.setExpiresIn(jwtService.getExpirationTime());
 

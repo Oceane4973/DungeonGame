@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+.header {
+  background-color: #2d2d2d;
+  padding: 1rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  z-index: 100;
+}
+
+.header {
+  top: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+.profile-icon {
+  cursor: pointer;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.gold-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+}
+
+.gold-icon-small {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    display: block;
+}
+
+.gold-amount-header {
+    color: white;
+    font-weight: 600;
+}
+
+.logo {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.logo:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.header-nav {
+    display: flex;
+    gap: 1rem;
+    margin-right: auto;
+    padding-left: 2rem;
+}
+
+.header-nav a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.header-nav a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body.light .header-nav a {
+    color: #1a1a1a;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light .header-nav a:hover {
+    background: rgba(0, 0, 0, 0.1);
+}

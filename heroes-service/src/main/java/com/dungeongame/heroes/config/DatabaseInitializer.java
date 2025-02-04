@@ -11,7 +11,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.dungeongame.heroes.provider.ServerInfoProvider;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.Map;
 @Configuration
 public class DatabaseInitializer {
 
-    private final ServerInfoProvider serverInfoProvider;
+    private final ServerConfig serviceConfig;
 
     @Value("${app.images.head-dir}")
     private String headDir;
@@ -30,8 +29,8 @@ public class DatabaseInitializer {
     @Value("${app.images.body-dir}")
     private String bodyDir;
 
-    public DatabaseInitializer(ServerInfoProvider serverInfoProvider) {
-        this.serverInfoProvider = serverInfoProvider;
+    public DatabaseInitializer(ServerConfig serviceConfig) {
+        this.serviceConfig = serviceConfig;
     }    
 
     @Bean
@@ -66,7 +65,7 @@ public class DatabaseInitializer {
 
         Map<Long, SpriteSet> spriteSetsByEntityId = new HashMap<>();
 
-        String baseUrl = serverInfoProvider.getServerUrl();
+        String baseUrl = serviceConfig.getServerUrl();
 
         for (File file : directory.listFiles()) {
             if (!file.isFile() || !file.getName().endsWith(".png"))

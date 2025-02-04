@@ -1,0 +1,183 @@
+/* Styles globaux */
+body {
+    margin: 0;
+    padding: 60px 0;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Thème clair */
+body.light {
+    background-color: #f0f2f5;
+    color: #1a1a1a;
+}
+
+body.light .profile-card {
+    background-color: rgba(255, 255, 255, 0.824);
+    color: #1a1a1a;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 6rem;
+}
+
+body.light header,
+body.light footer {
+    background-color: rgba(255, 255, 255, 0.824);
+    color: #1a1a1a;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+body.light header .logo {
+    color: #1a1a1a;
+    font-weight: 600;
+}
+
+body.light header .gold-amount-header {
+    color: #1a1a1a;
+}
+
+body.light header .profile-icon svg {
+    color: #1a1a1a !important;
+}
+
+body.light header .gold-display {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 8px 15px;
+    backdrop-filter: blur(5px);
+}
+
+body.light .logout-btn {
+    background-color: white;
+    color: #1a1a1a;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+body.light .logout-btn:hover {
+    background-color: #f5f5f5;
+}
+
+/* Thème sombre */
+body.dark {
+    background-color: #1a1a1a;
+    color: black;
+}
+
+body.dark .profile-card {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+}
+
+body.dark header,
+body.dark footer {
+    background-color: #1a1a1a;
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+body.dark .preferences-section {
+    background-color: #3d3d3d;
+}
+
+body.dark .detail-label {
+    color: #1a1a1a;
+}
+
+body.dark .detail-value {
+    color: #1a1a1a;
+}
+
+body.dark .separator {
+    background-color: #404040;
+}
+
+body.dark .logout-btn {
+    background-color: white;
+    color: #1a1a1a !important;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+body.dark .logout-btn:hover {
+    background-color: #f5f5f5;
+}
+
+body.dark .account-title {
+    color: #1a1a1a;
+}
+
+body.dark .preferences-title {
+    color: white;
+    font-weight: 600;
+}
+
+body.dark .preferences-content span {
+    color: white;
+}
+
+body.dark .login-container {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+body.dark header {
+    background-color: #1a1a1a !important;
+}
+
+body.dark footer {
+    background-color: #1a1a1a !important;
+}
+
+/* Thème clair */
+body.light .login-container {
+    background-color: rgba(255, 255, 255, 0.824);
+    color: #1a1a1a;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+body.light .login-form h2 {
+    color: #1a1a1a;
+}
+
+body.light .form-group input {
+    background-color: white;
+    color: #1a1a1a;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light .form-group input::placeholder {
+    color: #666;
+    opacity: 1;
+}
+
+body.light .form-group input:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+body.light .link-button {
+    color: #4a90e2;
+}
+
+body.light .link-button:hover {
+    color: #357abd;
+}
+
+/* Style des points de navigation pour le thème clair */
+body.light .slick-dots li button:before {
+    font-size: 8px;
+    color: #9a9797 !important;
+    opacity: 0.7;
+}
+
+body.light .slick-dots li.slick-active button:before {
+    color: #ffffff !important;
+    opacity: 1;
+}
+
+body.light .slick-dots li button:hover:before {
+    opacity: 1;
+}

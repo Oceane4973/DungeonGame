@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 services:
   db-users:
     image: postgres:latest
@@ -29,6 +29,17 @@ services:
       - db-heroes-data:/var/lib/postgresql/data
     networks:
       - dungeon-game
+
+  dungeon-game-frontend-service:
+    image: node:23-bullseye
+    container_name: dungeon-game-frontend-service
+    ports:
+       - "${SERVICE_FRONTEND_PORT}:8080"
+    volumes:
+      - ./frontend-service:/app
+    working_dir: /app/app
+    command: sh -c "npm install && npm run start"
+    restart: always
 
   dungeon-game-service-users:
     build:
@@ -78,6 +89,8 @@ services:
       - SPRING_DATASOURCE_URL=${SERVICE_HEROES_SPRING_DATASOURCE_URL}
       - SPRING_DATASOURCE_USERNAME=${SERVICE_HEROES_SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SERVICE_HEROES_SPRING_DATASOURCE_PASSWORD}
+      - SERVICE_HEROES_PORT=${SERVICE_HEROES_PORT}
+      - SERVICE_HEROES_HOST=${SERVICE_HOST}
     ports:
       - "${SERVICE_HEROES_PORT}:8080"
     depends_on:
@@ -99,7 +112,7 @@ services:
     container_name: dungeon-game-dungeon-service
     environment:  
       - SERVICE_DUNGEON_PORT=${SERVICE_DUNGEON_PORT}
-      - SERVICE_DUNGEON_HOST=${SERVICE_DUNGEON_HOST}
+      - SERVICE_DUNGEON_HOST=${SERVICE_HOST}
     ports:
       - "${SERVICE_DUNGEON_PORT}:3000"
     volumes:
