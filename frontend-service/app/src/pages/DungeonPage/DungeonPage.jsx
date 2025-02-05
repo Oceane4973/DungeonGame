@@ -73,7 +73,17 @@ function DungeonPage() {
                 y: Math.floor(Math.random() * 5)
             }));
 
-            const monstersList = positionedMonsters.map(monster => new Monster(monster.pv, monster.level, monster.attack, monster.x, monster.y, 'right', [monster.sprites[0]]));
+            const monstersList = positionedMonsters.map(monster => new Monster(
+                monster.pv,
+                monster.level,
+                monster.attack,
+                monster.x,
+                monster.y,
+                'right',
+                [monster.sprites[0]],
+                dungeonData,
+                isSolidBlock)
+            );
             setMonsters(monstersList);
         } catch (error) {
             console.error('Erreur lors de la récupération des monstres:', error);
@@ -113,7 +123,9 @@ function DungeonPage() {
                 heroData.position.x,
                 heroData.position.y,
                 'right',
-                [heroData.sprites.right[0]]
+                [heroData.sprites.right[0]],
+                dungeonData,
+                isSolidBlock
             );
 
             setHero(hero);
@@ -160,16 +172,17 @@ function DungeonPage() {
     useEffect(() => {
         if (!dungeonData?.dungeon || !hero?.position) return;
 
-        const currentCell = dungeonData.dungeon[hero.position.y][hero.position.x];
-
-        console.log('Position actuelle:', hero.position);
-        console.log('Cellule actuelle:', currentCell);
+        const currentCell = dungeonData.dungeon[hero.position.y]?.[hero.position.x] ?? null;
 
         if (currentCell === 'END_DUNGEON') {
             console.log('Fin du donjon atteinte !');
-            setShowVictory(true);
+
+            setTimeout(() => {
+                hero.reinitialize();
+                setShowVictory(true);
+            }, 100);
         }
-    }, [hero, dungeonData]);
+    }, [hero?.position.x, hero?.position.y, dungeonData]);
 
     const renderBackgroundLayers = () => {
         if (!dungeonData?.background?.layers) return null;
