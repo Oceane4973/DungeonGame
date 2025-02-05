@@ -1,23 +1,29 @@
 import Character from './Character';
 
 export default class Hero extends Character {
-    constructor(healthPoints, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock) {
-        super(healthPoints, level, attack, x, y, direction, spriteUrls, dungeonData, isSolidBlock);
+    constructor(healthPoints, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock, onDungeonComplete) {
+        super(healthPoints, level, attack, x, y, direction, spriteUrls, dungeonData, isSolidBlock, onDungeonComplete);
         this.isJumping = false;
         this.jumpHeight = 2;
+        
+        this.onDungeonComplete = onDungeonComplete;
+
         this.bindControls();
     }
 
-    reinitialize() {
-        this.position = { x: 0, y: 0 }; // Réinitialiser à la position de départ
-        this.isJumping = false;
-        this.canDoubleJump = true;
-        this.isDoubleJumping = false;
-        console.log('Héros réinitialisé !');
-    }    
-
     bindControls() {
         window.addEventListener('keydown', (e) => this.handleKeyPress(e));
+    }
+
+    wantToMoveInCell(x, y){
+        const cell = this.dungeonData.dungeon[y]?.[x];
+        if (cell === 'END_DUNGEON') {
+            console.log('Fin du donjon atteinte !');
+            this.onDungeonComplete();
+            this.destroy();  // Suppression propre de l'objet héros
+            return;
+        }
+        this.moveTo(x, y);
     }
 
     handleKeyPress(e) {
@@ -26,12 +32,12 @@ export default class Hero extends Character {
         switch (e.key.toLowerCase()) {
             case 'arrowleft':
             case 'q':
-                this.moveTo(this.position.x - 1, this.position.y);
+                this.wantToMoveInCell(this.position.x - 1, this.position.y);
                 this.direction = 'left';
                 break;
             case 'arrowright':
             case 'd':
-                this.moveTo(this.position.x + 1, this.position.y);
+                this.wantToMoveInCell(this.position.x + 1, this.position.y);
                 this.direction = 'right';
                 break;
             case 'arrowup':
@@ -42,7 +48,7 @@ export default class Hero extends Character {
                     let jumpCount = 0;
                     const jumpInterval = setInterval(() => {
                         if (jumpCount < this.jumpHeight) {
-                            this.moveTo(this.position.x, this.position.y - 1);
+                            this.wantToMoveInCell(this.position.x, this.position.y - 1);
                             jumpCount++;
                         } else {
                             clearInterval(jumpInterval);
@@ -53,4 +59,20 @@ export default class Hero extends Character {
                 break;
         }
     }
+
+    destroy() {
+        console.log('Héros détruit.');
+        window.removeEventListener('keydown', this.handleKeyPress);
+    
+        if (this.fallInterval) {
+            clearInterval(this.fallInterval);
+        }
+    
+        for (let prop in this) {
+            if (this.hasOwnProperty(prop)) {
+                delete this[prop];
+            }
+        }
+    }
+    
 }

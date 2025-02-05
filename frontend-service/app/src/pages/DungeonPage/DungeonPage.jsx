@@ -53,82 +53,66 @@ function DungeonPage() {
             cell === 'BARRIER_1';
     };
 
-    const fetchDungeon = async () => {
+    const initializeDungeon = async () => {
         try {
-            const data = await dungeonService.getDungeon();
+            const dungeon = await dungeonService.getDungeon();
+            setDungeonData(dungeon);
+            preloadImages(dungeon.assets);
 
-            preloadImages(data.assets);
-            setDungeonData(data);
+            const hero = await fetchHero(dungeon);
+            const monsters = await fetchMonsters(dungeon);
+
+            hero.dungeonData = dungeon;
+            monsters.forEach(monster => monster.dungeonData = dungeon);
+
+            setHero(hero);
+            setMonsters(monsters);
+
+            monsters.forEach(monster => monster.startMoving());
+
         } catch (error) {
-            console.error('Erreur lors de la récupération du donjon:', error);
+            console.error("Erreur lors de l'initialisation du donjon:", error);
         }
     };
 
-    const fetchMonsters = async () => {
+    const fetchMonsters = async (dungeon) => {
         try {
             const monstersData = await monsterService.getMonster();
-            const positionedMonsters = monstersData.map(monster => ({
-                ...monster,
-                x: Math.floor(Math.random() * 10),
-                y: Math.floor(Math.random() * 5)
-            }));
-
-            const monstersList = positionedMonsters.map(monster => new Monster(
-                monster.pv,
-                monster.level,
-                monster.attack,
-                monster.x,
-                monster.y,
-                'right',
-                [monster.sprites[0]],
-                dungeonData,
-                isSolidBlock)
-            );
-            setMonsters(monstersList);
+            return monstersData.map(monster => new Monster(
+                monster.pv, monster.level, monster.attack,
+                Math.floor(Math.random() * 10), Math.floor(Math.random() * 5),
+                'right', [monster.sprites[0]],
+                dungeon, isSolidBlock
+            ));
         } catch (error) {
             console.error('Erreur lors de la récupération des monstres:', error);
         }
     };
+    
+    const getDungeonStart = () => {
+        dungeonData?.dungeon.forEach((row, y) => {
+            row.forEach((cell, x) => {
+                if (cell === 'START_DUNGEON') {
+                    return { x, y };
+                }
+            });
+        });
+        return { x: 0, y: 0 };
+    }
 
-    const fetchHero = async () => {
+    const fetchHero = async (dungeon) => {
         const heroId = searchParams.get('heroId');
         if (!heroId) {
             navigate('/hero');
             return;
         }
-
         try {
             const heroData = await heroeService.getHeroById(heroId);
-
-
-            let startX = 0;
-            let startY = 0;
-
-            dungeonData?.dungeon.forEach((row, y) => {
-                row.forEach((cell, x) => {
-                    if (cell === 'START_DUNGEON') {
-                        startX = x;
-                        startY = y;
-                    }
-                });
-            });
-            heroData.position = { x: startX, y: startY };
-
-            console.log(heroData)
-
-            const hero = new Hero(
-                heroData.healthPoints,
-                heroData.level,
-                heroData.attack,
-                heroData.position.x,
-                heroData.position.y,
-                'right',
-                [heroData.sprites.right[0]],
-                dungeonData,
-                isSolidBlock
-            );
-
-            setHero(hero);
+            heroData.position = getDungeonStart(dungeon);
+            return new Hero(heroData.healthPoints, heroData.level, heroData.attack,
+                heroData.position.x, heroData.position.y,
+                'right', [heroData.sprites.right[0]],
+                dungeon, isSolidBlock, onDungeonCompleteHandler);
         } catch (error) {
             console.error('Erreur lors de la récupération du héros:', error);
             navigate('/hero');
@@ -146,15 +130,8 @@ function DungeonPage() {
     };
 
     useEffect(() => {
-        fetchDungeon();
+        initializeDungeon();
     }, []);
-
-    useEffect(() => {
-        if (dungeonData) {
-            fetchHero();
-            fetchMonsters();
-        }
-    }, [dungeonData]);
 
     useEffect(() => {
         if (showWelcome && countdown >= 0) {
@@ -169,20 +146,29 @@ function DungeonPage() {
         }
     }, [countdown, showWelcome]);
 
+    const onDungeonCompleteHandler = () =>{
+        setHero(null);
+        monsters.forEach(monster => {
+            monster.destroy();
+        })
+        setMonsters([]);
+        setTimeout(() => {
+            setShowVictory(true);
+            initializeDungeon();
+        }, 100);
+    }
+
     useEffect(() => {
-        if (!dungeonData?.dungeon || !hero?.position) return;
+        monsters.forEach(monster => monster.startMoving());
 
-        const currentCell = dungeonData.dungeon[hero.position.y]?.[hero.position.x] ?? null;
-
-        if (currentCell === 'END_DUNGEON') {
-            console.log('Fin du donjon atteinte !');
-
-            setTimeout(() => {
-                hero.reinitialize();
-                setShowVictory(true);
-            }, 100);
-        }
-    }, [hero?.position.x, hero?.position.y, dungeonData]);
+        return () => {
+            monsters.forEach(monster => {
+                if (typeof monster.stopMoving === "function") {
+                    monster.stopMoving();
+                }
+            });
+        };
+    }, [monsters]);
 
     const renderBackgroundLayers = () => {
         if (!dungeonData?.background?.layers) return null;

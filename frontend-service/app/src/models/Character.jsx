@@ -1,6 +1,6 @@
 export default class Character {
-    constructor(healthPoints, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock) {
-        this.healthPoints = healthPoints;
+    constructor(pv, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock) {
+        this.pv = pv;
         this.level = level;
         this.attack = attack;
         this.position = { x, y };
