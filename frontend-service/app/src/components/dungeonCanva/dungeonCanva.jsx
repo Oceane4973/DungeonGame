@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
-const DungeonCanva = ({ dungeonData, imageCache, hero, position, direction }) => {
+const DungeonCanva = ({ dungeonData, imageCache, hero, position, direction, monster, monsterPosition, monsterDirection }) => {
     const canvasRef = useRef(null);
 
     useEffect(() => {
         if (dungeonData && Object.keys(imageCache).length > 0) {
+            preloadCharacterImages();
             drawDungeon();
 
             const handleResize = () => drawDungeon();
@@ -12,7 +13,28 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, position, direction }) =>
 
             return () => window.removeEventListener('resize', handleResize);
         }
-    }, [dungeonData, imageCache, hero, position, direction]);
+    }, [dungeonData, imageCache, hero, monster, position, direction]);
+
+    // Préchargement des images du héros et du monstre dans le cache
+    const preloadCharacterImages = () => {
+        if (hero && hero.bodySprite && !imageCache[hero.bodySprite.url]) {
+            const bodyImage = new Image();
+            bodyImage.src = hero.bodySprite.url;
+            bodyImage.onload = () => (imageCache[hero.bodySprite.url] = bodyImage);
+        }
+
+        if (hero && hero.headSprite && !imageCache[hero.headSprite.url]) {
+            const headImage = new Image();
+            headImage.src = hero.headSprite.url;
+            headImage.onload = () => (imageCache[hero.headSprite.url] = headImage);
+        }
+
+        if (monster && monster.sprites[0] && !imageCache[monster.sprites[0].url]) {
+            const monsterSprite = new Image();
+            monsterSprite.src = monster.sprites[0].url;
+            monsterSprite.onload = () => (imageCache[monster.sprites[0].url] = monsterSprite);
+        }
+    };
 
     const drawDungeon = () => {
         const canvas = canvasRef.current;
@@ -38,17 +60,14 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, position, direction }) =>
             });
         });
 
-        if (hero && hero.bodySprite && hero.headSprite) {
-            const bodyImage = new Image();
-            const headImage = new Image();
-            
-            bodyImage.src = hero.bodySprite.url;
-            headImage.src = hero.headSprite.url;
+        if (hero) {
+            const bodyImage = imageCache[hero.bodySprite.url];
+            const headImage = imageCache[hero.headSprite.url];
 
             const heroX = position.x * cellSize;
             const heroY = position.y * cellSize;
 
-            bodyImage.onload = () => {
+            if (bodyImage) {
                 ctx.save();
                 if (direction === 'left') {
                     ctx.translate(heroX + cellSize, heroY);
@@ -58,9 +77,9 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, position, direction }) =>
                     ctx.drawImage(bodyImage, heroX, heroY, cellSize, cellSize);
                 }
                 ctx.restore();
-            };
-            
-            headImage.onload = () => {
+            }
+
+            if (headImage) {
                 ctx.save();
                 if (direction === 'left') {
                     ctx.translate(heroX + cellSize, heroY);
@@ -70,13 +89,29 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, position, direction }) =>
                     ctx.drawImage(headImage, heroX, heroY, cellSize, cellSize);
                 }
                 ctx.restore();
-            };
+            }
+        }
+
+        if (monster) {
+            const monsterSprite = imageCache[monster.sprites[0].url];
+
+            if (monsterSprite) {
+                ctx.save();
+                if (monsterDirection === 'left') {
+                    ctx.translate((monsterPosition.x + 1) * cellSize, monsterPosition.y * cellSize);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(monsterSprite, 0, 0, cellSize, cellSize);
+                } else {
+                    ctx.drawImage(monsterSprite, monsterPosition.x * cellSize, monsterPosition.y * cellSize, cellSize, cellSize);
+                }
+                ctx.restore();
+            }
         }
     };
 
     return (
-        <canvas 
-            ref={canvasRef} 
+        <canvas
+            ref={canvasRef}
             className="dungeon-canvas"
             style={{
                 imageRendering: 'pixelated',
