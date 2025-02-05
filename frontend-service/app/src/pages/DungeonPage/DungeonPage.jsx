@@ -8,6 +8,8 @@ import { heroeService } from "../../services/heroeService";
 import DungeonCanva from "../../components/dungeonCanva/dungeonCanva";
 import { monsterService } from "../../services/monsterService";
 import ReactConfetti from 'react-confetti';
+import Monster from "../../models/Monster";
+import Hero from "../../models/Hero";
 import './DungeonPage.css';
 
 function DungeonPage() {
@@ -19,28 +21,11 @@ function DungeonPage() {
     const [imageCache, setImageCache] = useState({});
 
     const [hero, setHero] = useState(null);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [direction, setDirection] = useState('right');
+    const [monsters, setMonsters] = useState([]);
 
-    const [monster, setMonster] = useState(null);
-    const [monsterPosition, setMonsterPosition] = useState({ x: 5, y: 0 }); // Position initiale au milieu
-    const [monsterDirection, setMonsterDirection] = useState('left'); // Direction initiale
-
-    const [isJumping, setIsJumping] = useState(false);
-    const [jumpHeight, setJumpHeight] = useState(0);
-    const [jumpVelocity, setJumpVelocity] = useState(0);
-    const [canDoubleJump, setCanDoubleJump] = useState(true);
-    const [isDoubleJumping, setIsDoubleJumping] = useState(false);
     const [showWelcome, setShowWelcome] = useState(true);
     const [countdown, setCountdown] = useState(5);
     const [showVictory, setShowVictory] = useState(false);
-
-    const JUMP_MAX_HEIGHT = 1;
-    const DOUBLE_JUMP_HEIGHT = 1;
-    const JUMP_SPEED = 30;
-    const GRAVITY_SPEED = 120;
-    const JUMP_FORCE = 0.5;
-    const DOUBLE_JUMP_FORCE = 0.5;
 
     // Faudrait le mettre dans un component => KerrianBOY a la giga flemme
     const isSolidBlock = (cell) => {
@@ -71,19 +56,27 @@ function DungeonPage() {
     const fetchDungeon = async () => {
         try {
             const data = await dungeonService.getDungeon();
-            setDungeonData(data);
+
             preloadImages(data.assets);
+            setDungeonData(data);
         } catch (error) {
             console.error('Erreur lors de la récupération du donjon:', error);
         }
     };
 
-    const fetchMonster = async () => {
+    const fetchMonsters = async () => {
         try {
-            const [monsterData] = await monsterService.getMonster();
-            setMonster(monsterData);
+            const monstersData = await monsterService.getMonster();
+            const positionedMonsters = monstersData.map(monster => ({
+                ...monster,
+                x: Math.floor(Math.random() * 10),
+                y: Math.floor(Math.random() * 5)
+            }));
+
+            const monstersList = positionedMonsters.map(monster => new Monster(monster.pv, monster.level, monster.attack, monster.x, monster.y, 'right', [monster.sprites[0]]));
+            setMonsters(monstersList);
         } catch (error) {
-            console.error('Erreur lors de la récupération du monstre:', error);
+            console.error('Erreur lors de la récupération des monstres:', error);
         }
     };
 
@@ -96,12 +89,12 @@ function DungeonPage() {
 
         try {
             const heroData = await heroeService.getHeroById(heroId);
-            setHero(heroData);
+
 
             let startX = 0;
             let startY = 0;
 
-            dungeonData.dungeon.forEach((row, y) => {
+            dungeonData?.dungeon.forEach((row, y) => {
                 row.forEach((cell, x) => {
                     if (cell === 'START_DUNGEON') {
                         startX = x;
@@ -109,8 +102,21 @@ function DungeonPage() {
                     }
                 });
             });
+            heroData.position = { x: startX, y: startY };
 
-            setPosition({ x: startX, y: startY });
+            console.log(heroData)
+
+            const hero = new Hero(
+                heroData.healthPoints,
+                heroData.level,
+                heroData.attack,
+                heroData.position.x,
+                heroData.position.y,
+                'right',
+                [heroData.sprites.right[0]]
+            );
+
+            setHero(hero);
         } catch (error) {
             console.error('Erreur lors de la récupération du héros:', error);
             navigate('/hero');
@@ -119,24 +125,12 @@ function DungeonPage() {
 
     const preloadImages = (assets) => {
         const cache = {};
-        const assetKeys = Object.keys(assets);
-        let loadedCount = 0;
-
-        assetKeys.forEach((key) => {
+        Object.keys(assets).forEach(key => {
             const img = new Image();
             img.src = assets[key];
-            img.onload = () => {
-                cache[key] = img;
-                loadedCount++;
-
-                if (loadedCount === assetKeys.length) {
-                    setImageCache(cache);
-                }
-            };
-            img.onerror = () => {
-                console.error(`Erreur de chargement de l'image : ${assets[key]}`);
-            };
+            img.onload = () => (cache[key] = img);
         });
+        setImageCache(cache);
     };
 
     useEffect(() => {
@@ -145,176 +139,10 @@ function DungeonPage() {
 
     useEffect(() => {
         if (dungeonData) {
-            fetchMonster();
             fetchHero();
+            fetchMonsters();
         }
     }, [dungeonData]);
-
-    useEffect(() => {
-        if (!dungeonData?.dungeon || !hero) return;
-
-        const applyGravity = () => {
-            if (isJumping) return;
-
-            const newPosition = { ...position };
-            const cellBelow = newPosition.y + 1 < dungeonData.dungeon.length ?
-                dungeonData.dungeon[newPosition.y + 1][newPosition.x] : null;
-
-            if (cellBelow && !isSolidBlock(cellBelow)) {
-                setPosition(prev => ({ ...prev, y: prev.y + 1 }));
-                if (!canDoubleJump) {
-                    setCanDoubleJump(true);
-                }
-            } else {
-                if (!canDoubleJump) {
-                    setCanDoubleJump(true);
-                }
-            }
-        };
-
-        const gravityInterval = setInterval(applyGravity, GRAVITY_SPEED);
-        return () => clearInterval(gravityInterval);
-    }, [position, dungeonData, hero, isJumping, canDoubleJump]);
-
-    useEffect(() => {
-        if (!dungeonData?.dungeon || !monster) return;
-
-        const moveMonster = () => {
-            const { x, y } = monsterPosition;
-            const directionOffset = monsterDirection === 'left' ? -1 : 1;
-
-            const nextX = x + directionOffset;
-            const isNextCellSolid = dungeonData.dungeon[y][nextX] && isSolidBlock(dungeonData.dungeon[y + 1][nextX]);
-
-            if (isNextCellSolid) {
-                setMonsterPosition({ x: nextX, y });
-            } else {
-                setMonsterDirection(monsterDirection === 'left' ? 'right' : 'left'); // Change la direction
-            }
-        };
-
-        const monsterInterval = setInterval(moveMonster, 1000); // Déplacement toutes les secondes
-        return () => clearInterval(monsterInterval);
-    }, [monster, monsterPosition, monsterDirection, dungeonData]);
-
-    useEffect(() => {
-        if (!isJumping || !dungeonData?.dungeon) return;
-
-        const jumpInterval = setInterval(() => {
-            if (jumpHeight >= JUMP_MAX_HEIGHT) {
-                if (canDoubleJump && !isDoubleJumping) {
-                    // Permet le double saut
-                    setJumpHeight(0);
-                    setIsDoubleJumping(true);
-                    setCanDoubleJump(false);
-                } else {
-                    // Fin du saut
-                    setIsJumping(false);
-                    setJumpHeight(0);
-                    setIsDoubleJumping(false);
-                }
-                return;
-            }
-
-            const newPosition = { ...position };
-            const cellAbove = newPosition.y - 1 >= 0 ?
-                dungeonData.dungeon[newPosition.y - 1][newPosition.x] : null;
-
-            if (cellAbove && !isSolidBlock(cellAbove)) {
-                setPosition(prev => ({ ...prev, y: prev.y - 1 }));
-                setJumpHeight(prev => prev + 1);
-            } else {
-                setIsJumping(false);
-                setJumpHeight(0);
-                setIsDoubleJumping(false);
-            }
-        }, JUMP_SPEED);
-
-        return () => clearInterval(jumpInterval);
-    }, [isJumping, jumpHeight, position, dungeonData, canDoubleJump, isDoubleJumping]);
-
-    // Reset le double saut quand on touche le sol
-    useEffect(() => {
-        if (!isJumping) {
-            setCanDoubleJump(true);
-            setIsDoubleJumping(false);
-        }
-    }, [isJumping]);
-
-    useEffect(() => {
-        const handleKeyPress = (e) => {
-            if (!dungeonData?.dungeon || !hero) return;
-
-            const newPosition = { ...position };
-            let canMove = true;
-
-            const checkCollision = (x, y) => {
-                if (y < 0 || y >= dungeonData.dungeon.length ||
-                    x < 0 || x >= dungeonData.dungeon[0].length) {
-                    return false;
-                }
-                const nextCell = dungeonData.dungeon[y][x];
-                return !isSolidBlock(nextCell);
-            };
-
-            switch (e.key.toLowerCase()) {
-                case 'arrowup':
-                case 'z':
-                    canMove = checkCollision(position.x, position.y - 1);
-                    if (canMove) {
-                        newPosition.y--;
-                        setDirection('back');
-                    }
-                    break;
-                case 'arrowdown':
-                case 's':
-                    canMove = checkCollision(position.x, position.y + 1);
-                    if (canMove) {
-                        newPosition.y++;
-                        setDirection('front');
-                    }
-                    break;
-                case 'arrowleft':
-                case 'q':
-                    canMove = checkCollision(position.x - 1, position.y);
-                    if (canMove) {
-                        newPosition.x--;
-                        setDirection('left');
-                    }
-                    break;
-                case 'arrowright':
-                case 'd':
-                    canMove = checkCollision(position.x + 1, position.y);
-                    if (canMove) {
-                        newPosition.x++;
-                        setDirection('right');
-                    }
-                    break;
-                case ' ':
-                    const cellBelow = position.y + 1 < dungeonData.dungeon.length ?
-                        dungeonData.dungeon[position.y + 1][position.x] : null;
-
-                    if (isSolidBlock(cellBelow) && !isJumping) {
-                        setIsJumping(true);
-                        setJumpVelocity(JUMP_FORCE);
-                    }
-                    else if (isJumping && canDoubleJump) {
-                        setJumpVelocity(JUMP_FORCE);
-                        setCanDoubleJump(false);
-                    }
-                    break;
-                default:
-                    return;
-            }
-
-            if (canMove) {
-                setPosition(newPosition);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyPress);
-        return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [position, dungeonData, hero, isJumping, canDoubleJump]);
 
     useEffect(() => {
         if (showWelcome && countdown >= 0) {
@@ -330,17 +158,18 @@ function DungeonPage() {
     }, [countdown, showWelcome]);
 
     useEffect(() => {
-        if (!dungeonData?.dungeon || !position) return;
+        if (!dungeonData?.dungeon || !hero?.position) return;
 
-        const currentCell = dungeonData.dungeon[position.y][position.x];
-        console.log('Position actuelle:', position);
+        const currentCell = dungeonData.dungeon[hero.position.y][hero.position.x];
+
+        console.log('Position actuelle:', hero.position);
         console.log('Cellule actuelle:', currentCell);
 
         if (currentCell === 'END_DUNGEON') {
             console.log('Fin du donjon atteinte !');
             setShowVictory(true);
         }
-    }, [position, dungeonData]);
+    }, [hero, dungeonData]);
 
     const renderBackgroundLayers = () => {
         if (!dungeonData?.background?.layers) return null;
@@ -393,18 +222,15 @@ function DungeonPage() {
             )}
 
             <div className="main-container">
-                {dungeonData && (
+                {dungeonData && hero && monsters && (
                     <>
                         {renderBackgroundLayers()}
                         <DungeonCanva
                             dungeonData={dungeonData}
                             imageCache={imageCache}
                             hero={hero}
-                            position={position}
-                            direction={direction}
-                            monster={monster} // Ajout du monstre
-                            monsterPosition={monsterPosition}
-                            monsterDirection={monsterDirection}
+                            monsters={monsters}
+                            isSolidBlock={isSolidBlock}
                         />
                     </>
                 )}
@@ -415,7 +241,7 @@ function DungeonPage() {
                     <h1>Donjon</h1>
                     {hero && (
                         <div className="hero-stats">
-                            <p>Niveau: {hero.level} | PV: {hero.healthPoints} | ATK: {hero.attack}</p>
+                            <p>Niveau: {hero.level} | PV: {hero.pv} | ATK: {hero.attack}</p>
                         </div>
                     )}
                     <p>Utilisez les flèches du clavier ou ZQSD pour vous déplacer, et ESPACE pour sauter</p>
