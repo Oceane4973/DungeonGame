@@ -6,6 +6,8 @@ export default class Hero extends Character {
         this.isJumping = false;
         this.jumpHeight = 2;
 
+        this.isHero = true;
+
         this.onDungeonComplete = onDungeonComplete;
 
         this.bindControls();

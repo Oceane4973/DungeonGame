@@ -1,4 +1,7 @@
 export default class Character {
+    
+    static maxPv = 170;
+    
     constructor(pv, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock) {
         this.pv = pv;
         this.level = level;

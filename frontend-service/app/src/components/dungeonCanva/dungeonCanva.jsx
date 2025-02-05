@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
+import Character from '../../models/Character';
+
 const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock }) => {
     const canvasRef = useRef(null);
     const cellSize = 100;
@@ -24,11 +26,6 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock })
         }
     }, [dungeonData, imageCache]);
 
-    useEffect(() => {
-        monsters.forEach(monster => monster.startMoving(dungeonData, isSolidBlock));
-        return () => monsters.forEach(monster => monster.stopMoving());
-    }, [monsters]);
-
     const drawDungeon = () => {
         const canvas = canvasRef.current;
         if (!canvas || !dungeonData) return;
@@ -51,15 +48,33 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock })
 
         drawCharacter(ctx, hero);
         monsters.forEach(monster => drawCharacter(ctx, monster));
+
+        checkCollision(hero, monsters);
+    };
+
+    const checkCollision = (hero, monsters) => {
+        monsters.forEach(monster => {
+            if (hero.position.x === monster.position.x && hero.position.y === monster.position.y) {
+                console.log(`💥 Collision détectée avec un monstre à (${hero.position.x}, ${hero.position.y}) !`);
+
+                hero.pv -= monster.attack;
+                console.log(`PV du héros : ${hero.pv}`);
+
+                if (hero.pv <= 0) {
+                    console.log("💀 Le héros est mort !");
+                }
+            }
+        });
     };
 
     const drawCharacter = (ctx, character) => {
-        const sprite = character.imageCache[character.sprites[0].url];
+        const sprite = character.imageCache[character.sprites[0]?.url];
         if (!sprite) return;
 
-        ctx.save();
         const x = character.position.x * cellSize;
         const y = character.position.y * cellSize;
+
+        ctx.save();
 
         if (character.direction === 'left') {
             ctx.translate(x + cellSize, y);
@@ -68,8 +83,33 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock })
         } else {
             ctx.drawImage(sprite, x, y, cellSize, cellSize);
         }
+
         ctx.restore();
+
+        drawHealthBar(ctx, character, x, y - 10);
     };
+
+    const drawHealthBar = (ctx, character, x, y) => {
+        const barWidth = 60;
+        const barHeight = 8;
+        const healthPercentage = character.pv / Character.maxPv;
+
+        const currentBarWidth = Math.max(0, barWidth * healthPercentage);
+        const barColor = character.isHero ? 'green' : 'red';
+
+        const barX = x + (cellSize - barWidth) / 2;
+        const barY = y;
+
+        ctx.fillStyle = 'lightgray';
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+
+        ctx.fillStyle = barColor;
+        ctx.fillRect(barX, barY, currentBarWidth, barHeight);
+
+        ctx.strokeStyle = 'black';
+        ctx.strokeRect(barX, barY, barWidth, barHeight);
+    };
+
 
     return (
         <canvas

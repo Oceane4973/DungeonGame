@@ -5,6 +5,8 @@ export default class Monster extends Character {
         super(healthPoints, level, attack, x, y, direction, spriteUrls, dungeonData, isSolidBlock);
         this.moveInterval = null;
 
+        this.isHero = false;
+
         this.moveTo(this.position.x, this.position.y+1);
     }
 
