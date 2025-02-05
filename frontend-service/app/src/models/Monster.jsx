@@ -4,6 +4,8 @@ export default class Monster extends Character {
     constructor(healthPoints, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock) {
         super(healthPoints, level, attack, x, y, direction, spriteUrls, dungeonData, isSolidBlock);
         this.moveInterval = null;
+
+        this.moveTo(this.position.x, this.position.y+1);
     }
 
     startMoving() {
@@ -38,6 +40,40 @@ export default class Monster extends Character {
             if (this.hasOwnProperty(prop)) {
                 delete this[prop];
             }
+        }
+    }
+
+    moveTo(x, y) {
+        if (
+            x >= 0 && y >= 0 && 
+            y < this.dungeonData.dungeon.length && 
+            x < this.dungeonData.dungeon[0].length &&
+            !this.isSolidBlock(this.dungeonData.dungeon[y][x])
+        ) {
+            this.position = { x, y };
+
+            if (typeof window.forceRedraw === 'function') {
+                window.forceRedraw();
+            }
+
+            if (this.fallInterval) {
+                clearInterval(this.fallInterval);
+            }
+
+            this.fallInterval = setInterval(() => {
+                const belowY = this.position.y + 1;
+                if (
+                    belowY < this.dungeonData.dungeon.length &&
+                    !this.isSolidBlock(this.dungeonData.dungeon[belowY][this.position.x])
+                ) {
+                    this.position.y++;
+                    if (typeof window.forceRedraw === 'function') {
+                        window.forceRedraw();
+                    }
+                } else {
+                    clearInterval(this.fallInterval);
+                }
+            }, 200);
         }
     }
 }

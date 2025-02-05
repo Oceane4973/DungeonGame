@@ -24,7 +24,7 @@ function DungeonPage() {
     const [monsters, setMonsters] = useState([]);
 
     const [showWelcome, setShowWelcome] = useState(true);
-    const [countdown, setCountdown] = useState(5);
+    const [countdown, setCountdown] = useState(3);
     const [showVictory, setShowVictory] = useState(false);
 
     // Faudrait le mettre dans un component => KerrianBOY a la giga flemme
@@ -53,27 +53,55 @@ function DungeonPage() {
             cell === 'BARRIER_1';
     };
 
+    let isDungeonInitialized = false; // Verrou global pour empêcher les doubles appels
+
     const initializeDungeon = async () => {
+        if (isDungeonInitialized) {
+            console.log("Initialisation déjà en cours, opération ignorée.");
+            return;
+        }
+
+        isDungeonInitialized = true;
+
+        console.log("Fetch dungeon");
+        console.log(dungeonData || null);
+        console.log(hero || null);
+        console.log(monsters || []);
+
+        if (dungeonData != null && hero != null && monsters.length > 0) {
+            console.log("Modification des states avortées");
+            return;
+        }
+
+        console.log("Modification des states en cours...");
+
         try {
             const dungeon = await dungeonService.getDungeon();
             setDungeonData(dungeon);
             preloadImages(dungeon.assets);
 
-            const hero = await fetchHero(dungeon);
-            const monsters = await fetchMonsters(dungeon);
+            const fetchedHero = await fetchHero(dungeon);
+            const fetchedMonsters = await fetchMonsters(dungeon);
 
-            hero.dungeonData = dungeon;
-            monsters.forEach(monster => monster.dungeonData = dungeon);
+            fetchedHero.dungeonData = dungeon;
+            fetchedMonsters.forEach(monster => (monster.dungeonData = dungeon));
 
-            setHero(hero);
-            setMonsters(monsters);
+            setHero(fetchedHero);
+            setMonsters(fetchedMonsters);
 
-            monsters.forEach(monster => monster.startMoving());
+            fetchedMonsters.forEach(monster => monster.startMoving());
 
         } catch (error) {
             console.error("Erreur lors de l'initialisation du donjon:", error);
+        } finally {
+            isDungeonInitialized = false;
+
+            setTimeout(() => {
+                setShowVictory(false);
+            }, 1400);
         }
     };
+
 
     const fetchMonsters = async (dungeon) => {
         try {
@@ -88,7 +116,7 @@ function DungeonPage() {
             console.error('Erreur lors de la récupération des monstres:', error);
         }
     };
-    
+
     const getDungeonStart = () => {
         dungeonData?.dungeon.forEach((row, y) => {
             row.forEach((cell, x) => {
@@ -146,14 +174,15 @@ function DungeonPage() {
         }
     }, [countdown, showWelcome]);
 
-    const onDungeonCompleteHandler = () =>{
+    const onDungeonCompleteHandler = () => {
+        setShowVictory(true);
         setHero(null);
         monsters.forEach(monster => {
             monster.destroy();
         })
         setMonsters([]);
+        setDungeonData(null);
         setTimeout(() => {
-            setShowVictory(true);
             initializeDungeon();
         }, 100);
     }
@@ -209,13 +238,13 @@ function DungeonPage() {
                             numberOfPieces={200}
                             style={{ position: 'fixed', top: 0, left: 0, zIndex: 1000 }}
                         />
-                        <div className="victory-content">
+                        {/* <div className="victory-content">
                             <div className="treasure-icon">🏆</div>
                             <h2>Vous avez gagné la partie !</h2>
                             <button onClick={() => navigate('/hero')}>
                                 Retour au menu
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 </>
             )}

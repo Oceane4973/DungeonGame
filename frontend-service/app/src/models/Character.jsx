@@ -23,6 +23,10 @@ export default class Character {
         this.preloadSprites();
     }
 
+    updateDungeon(dungeon){
+        this.dungeonData = dungeon;
+    }
+
     preloadSprites() {
         if (Array.isArray(this.sprites)) {
             this.sprites.forEach(sprite => {
@@ -44,7 +48,7 @@ export default class Character {
         }
     }
 
-    moveTo(x, y) {
+    /*moveTo(x, y) {
         if (
             x >= 0 && y >= 0 && 
             y < this.dungeonData.dungeon.length && 
@@ -76,5 +80,5 @@ export default class Character {
                 }
             }, 200);
         }
-    }
+    }*/
 }

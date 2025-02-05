@@ -5,17 +5,18 @@ export default class Hero extends Character {
         super(healthPoints, level, attack, x, y, direction, spriteUrls, dungeonData, isSolidBlock, onDungeonComplete);
         this.isJumping = false;
         this.jumpHeight = 2;
-        
+
         this.onDungeonComplete = onDungeonComplete;
 
         this.bindControls();
+        this.wantToMoveInCell(this.position.x, this.position.y+1);
     }
 
     bindControls() {
         window.addEventListener('keydown', (e) => this.handleKeyPress(e));
     }
 
-    wantToMoveInCell(x, y){
+    wantToMoveInCell(x, y) {
         const cell = this.dungeonData.dungeon[y]?.[x];
         if (cell === 'END_DUNGEON') {
             console.log('Fin du donjon atteinte !');
@@ -41,6 +42,7 @@ export default class Hero extends Character {
                 this.direction = 'right';
                 break;
             case 'arrowup':
+            case ' ':
             case 'z':
                 const belowY = this.position.y + 1;
                 if (!this.isJumping && this.isSolidBlock(this.dungeonData.dungeon[belowY][this.position.x])) {
@@ -60,19 +62,60 @@ export default class Hero extends Character {
         }
     }
 
+    moveTo(x, y) {
+        if (
+            x >= 0 && y >= 0 &&
+            y < this.dungeonData.dungeon.length &&
+            x < this.dungeonData.dungeon[0].length &&
+            !this.isSolidBlock(this.dungeonData.dungeon[y][x])
+        ) {
+            this.position = { x, y };
+
+            if (typeof window.forceRedraw === 'function') {
+                window.forceRedraw();
+            }
+
+            if (this.fallInterval) {
+                clearInterval(this.fallInterval);
+            }
+
+            this.fallInterval = setInterval(() => {
+                const belowY = this.position.y + 1;
+                const cell = this.dungeonData.dungeon[belowY]?.[this.position.x];
+                if (cell === 'END_DUNGEON') {
+                    console.log('Fin du donjon atteinte !');
+                    this.onDungeonComplete();
+                    this.destroy();
+                    return;
+                }
+                if (
+                    belowY < this.dungeonData.dungeon.length &&
+                    !this.isSolidBlock(this.dungeonData.dungeon[belowY][this.position.x])
+                ) {
+                    this.position.y++;
+                    if (typeof window.forceRedraw === 'function') {
+                        window.forceRedraw();
+                    }
+                } else {
+                    clearInterval(this.fallInterval);
+                }
+            }, 200);
+        }
+    }
+
     destroy() {
         console.log('Héros détruit.');
         window.removeEventListener('keydown', this.handleKeyPress);
-    
+
         if (this.fallInterval) {
             clearInterval(this.fallInterval);
         }
-    
+
         for (let prop in this) {
             if (this.hasOwnProperty(prop)) {
                 delete this[prop];
             }
         }
     }
-    
+
 }
