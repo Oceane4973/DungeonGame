@@ -9,6 +9,7 @@ import DungeonCanva from "../../components/dungeonCanva/dungeonCanva";
 import { monsterService } from "../../services/monsterService";
 import ReactConfetti from 'react-confetti';
 import Monster from "../../models/Monster";
+import userService from '../../services/userService';
 import Hero from "../../models/Hero";
 import './DungeonPage.css';
 
@@ -16,6 +17,8 @@ function DungeonPage() {
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const [user, setUser] = useState(null);
+
 
     const [dungeonData, setDungeonData] = useState(null);
     const [imageCache, setImageCache] = useState({});
@@ -26,6 +29,21 @@ function DungeonPage() {
     const [showWelcome, setShowWelcome] = useState(true);
     const [countdown, setCountdown] = useState(3);
     const [showVictory, setShowVictory] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userData = await userService.getUserDetails();
+                setUser(userData);
+
+                console.log("user data:", userData);
+            } catch (err) {
+                console.error("Impossible de récupérer les donénes utilisateur.");
+            }
+        };
+
+        fetchData();
+    }, []);
 
     // Faudrait le mettre dans un component => KerrianBOY a la giga flemme
     const isSolidBlock = (cell) => {
@@ -259,6 +277,7 @@ function DungeonPage() {
                             hero={hero}
                             monsters={monsters}
                             isSolidBlock={isSolidBlock}
+                            username={user.username}
                         />
                     </>
                 )}

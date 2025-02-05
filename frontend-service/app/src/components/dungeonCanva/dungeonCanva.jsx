@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 import Character from '../../models/Character';
+import { fightService } from '../../services/fightService';
 
-const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock }) => {
+const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, username }) => {
     const canvasRef = useRef(null);
     const cellSize = 100;
 
@@ -52,17 +53,30 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock })
         checkCollision(hero, monsters);
     };
 
+    const fetchFight = async (hero, monster, username) => {
+        try {
+            const resultat = await fightService.getFightResult(hero, monster, username);
+            return resultat;
+        } catch (err) {
+            console.error("Impossible de récupérer les données de combats.");
+        }
+    };
+
     const checkCollision = (hero, monsters) => {
-        monsters.forEach(monster => {
+        monsters.forEach(async monster => {
             if (hero.position.x === monster.position.x && hero.position.y === monster.position.y) {
                 console.log(`💥 Collision détectée avec un monstre à (${hero.position.x}, ${hero.position.y}) !`);
 
-                hero.pv -= monster.attack;
+                console.log(username);
+                const resultat = await fetchFight(hero, monster, username);
+                console.log(`GAGNANT  : ${resultat.winner}`);
+                
+                /*hero.pv -= monster.attack;
                 console.log(`PV du héros : ${hero.pv}`);
 
                 if (hero.pv <= 0) {
                     console.log("💀 Le héros est mort !");
-                }
+                }*/
             }
         });
     };
