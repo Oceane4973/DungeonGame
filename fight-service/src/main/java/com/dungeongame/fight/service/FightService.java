@@ -23,7 +23,7 @@ public class FightService {
         if (fight.getMonsterHealth() <= fight.getHeroHealth()) {
             return new FightResponse("hero", "monster");
         } else {
-            return new FightResponse("hero", "monster");
+            return new FightResponse("monster", "hero");
         }
     }
 

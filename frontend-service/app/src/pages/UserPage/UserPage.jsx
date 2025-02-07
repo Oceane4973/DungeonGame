@@ -26,7 +26,9 @@ const UserPage = () => {
     const fetchData = async () => {
       try {
         const userData = await UserService.getUserDetails();
-        setUser(userData);
+        let myuser = userData;
+        myuser.gold = 3;
+        setUser(myuser);
         
         const heroesData = await heroeService.getHeroes(userData.id);
         console.log("Heroes data:", heroesData);

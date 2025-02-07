@@ -14,6 +14,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/fight")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class FightController {
 
     @Autowired

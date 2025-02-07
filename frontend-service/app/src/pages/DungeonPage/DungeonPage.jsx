@@ -6,186 +6,198 @@ import Footer from "../../components/footer/Footer";
 import { dungeonService } from "../../services/dungeonService";
 import { heroeService } from "../../services/heroeService";
 import DungeonCanva from "../../components/dungeonCanva/dungeonCanva";
+import { monsterService } from "../../services/monsterService";
+import ReactConfetti from 'react-confetti';
+import Monster from "../../models/Monster";
+import Hero from "../../models/Hero";
 import './DungeonPage.css';
 
 function DungeonPage() {
-    const { logout } = useContext(AuthContext);
+    const { logout, user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    
+
     const [dungeonData, setDungeonData] = useState(null);
     const [imageCache, setImageCache] = useState({});
-    const [hero, setHero] = useState(null);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [isJumping, setIsJumping] = useState(false);
-    const [jumpHeight, setJumpHeight] = useState(0);
-    const JUMP_MAX_HEIGHT = 2; // Hauteur maximale du saut en cellules
-    const GRAVITY_SPEED = 100; // Vitesse de la gravité en ms
-    const [direction, setDirection] = useState('right');
 
-    const fetchDungeon = async () => {
+    const [hero, setHero] = useState(null);
+    const [monsters, setMonsters] = useState([]);
+
+    const [showWelcome, setShowWelcome] = useState(true);
+    const [countdown, setCountdown] = useState(3);
+    const [showVictory, setShowVictory] = useState(false);
+
+    // Faudrait le mettre dans un component => KerrianBOY a la giga flemme
+    const isSolidBlock = (cell) => {
+        return cell === 'WALL' ||
+            cell === 'GROUND_TOP' ||
+            cell === 'GROUND_FULL_1' ||
+            cell === 'GROUND_FULL_2' ||
+            cell === 'GROUND_FULL_3' ||
+            cell === 'GROUND_STONE_1' ||
+            cell === 'GROUND_STONE_2' ||
+            cell === 'GROUND_TOP_LEFT' ||
+            cell === 'GROUND_TOP_RIGHT' ||
+            cell === 'GROUND_LEFT' ||
+            cell === 'GROUND_RIGHT' ||
+            cell === 'GROUND_BOTTOM_LEFT' ||
+            cell === 'GROUND_BOTTOM' ||
+            cell === 'GROUND_BOTTOM_RIGHT' ||
+            /*cell === 'TREE_1' ||
+            cell === 'TREE_2' ||
+            cell === 'ROCK_1' ||
+            cell === 'ROCK_2' ||*/
+            cell === 'STONE_BARRIER_1' ||
+            cell === 'STONE_BARRIER_2' ||
+            cell === 'STONE_BARRIER_3' ||
+            cell === 'BARRIER_1';
+    };
+
+    let isDungeonInitialized = false; // Verrou global pour empêcher les doubles appels
+
+    const initializeDungeon = async () => {
+        if (isDungeonInitialized) {
+            console.log("Initialisation déjà en cours, opération ignorée.");
+            return;
+        }
+
+        isDungeonInitialized = true;
+
+        console.log("Fetch dungeon");
+        console.log(dungeonData || null);
+        console.log(hero || null);
+        console.log(monsters || []);
+
+        if (dungeonData != null && hero != null && monsters.length > 0) {
+            console.log("Modification des states avortées");
+            return;
+        }
+
+        console.log("Modification des states en cours...");
+
         try {
-            const data = await dungeonService.getDungeon();
-            setDungeonData(data);
-            preloadImages(data.assets);
+            const dungeon = await dungeonService.getDungeon();
+            setDungeonData(dungeon);
+            preloadImages(dungeon.assets);
+
+            const fetchedHero = await fetchHero(dungeon);
+            const fetchedMonsters = await fetchMonsters(dungeon);
+
+            fetchedHero.dungeonData = dungeon;
+            fetchedMonsters.forEach(monster => (monster.dungeonData = dungeon));
+
+            setHero(fetchedHero);
+            setMonsters(fetchedMonsters);
+
+            fetchedMonsters.forEach(monster => monster.startMoving());
+
         } catch (error) {
-            console.error('Erreur lors de la récupération du donjon:', error);
+            console.error("Erreur lors de l'initialisation du donjon:", error);
+        } finally {
+            isDungeonInitialized = false;
+
+            setTimeout(() => {
+                setShowVictory(false);
+            }, 1400);
         }
     };
 
-    const preloadImages = (assets) => {
-        const cache = {};
-        const assetKeys = Object.keys(assets);
-        let loadedCount = 0;
 
-        assetKeys.forEach((key) => {
-            const img = new Image();
-            img.src = assets[key];
-            img.onload = () => {
-                cache[key] = img;
-                loadedCount++;
-
-                if (loadedCount === assetKeys.length) {
-                    setImageCache(cache);
-                }
-            };
-            img.onerror = () => {
-                console.error(`Erreur de chargement de l'image : ${assets[key]}`);
-            };
-        });
+    const fetchMonsters = async (dungeon) => {
+        try {
+            const monstersData = await monsterService.getMonster();
+            return monstersData.map(monster => new Monster(
+                monster.pv, monster.level, monster.attack,
+                Math.floor(Math.random() * 10), Math.floor(Math.random() * 5),
+                'right', [monster.sprites[0]],
+                dungeon, isSolidBlock
+            ));
+        } catch (error) {
+            console.error('Erreur lors de la récupération des monstres:', error);
+        }
     };
 
-    const fetchHero = async () => {
+    const getDungeonStart = () => {
+        dungeonData?.dungeon.forEach((row, y) => {
+            row.forEach((cell, x) => {
+                if (cell === 'START_DUNGEON') {
+                    return { x, y };
+                }
+            });
+        });
+        return { x: 0, y: 0 };
+    }
+
+    const fetchHero = async (dungeon) => {
         const heroId = searchParams.get('heroId');
         if (!heroId) {
             navigate('/hero');
             return;
         }
-
         try {
             const heroData = await heroeService.getHeroById(heroId);
-            setHero(heroData);
-            // Positionner le héros au centre de la première ligne
-            setPosition({ x: Math.floor(dungeonData?.dungeon[0]?.length / 2) || 0, y: 0 });
+            heroData.position = getDungeonStart(dungeon);
+            return new Hero(heroData.healthPoints, heroData.level, heroData.attack,
+                heroData.position.x, heroData.position.y,
+                'right', [heroData.sprites.right[0]],
+                dungeon, isSolidBlock, onDungeonCompleteHandler);
         } catch (error) {
             console.error('Erreur lors de la récupération du héros:', error);
             navigate('/hero');
         }
     };
 
+    const preloadImages = (assets) => {
+        const cache = {};
+        Object.keys(assets).forEach(key => {
+            const img = new Image();
+            img.src = assets[key];
+            img.onload = () => (cache[key] = img);
+        });
+        setImageCache(cache);
+    };
+
     useEffect(() => {
-        fetchDungeon();
+        initializeDungeon();
     }, []);
 
     useEffect(() => {
-        if (dungeonData) {
-            fetchHero();
+        if (showWelcome && countdown >= 0) {
+            const timer = setTimeout(() => {
+                if (countdown === 0) {
+                    setShowWelcome(false);
+                }
+                setCountdown(countdown - 1);
+            }, 1000);
+
+            return () => clearTimeout(timer);
         }
-    }, [dungeonData]);
+    }, [countdown, showWelcome]);
 
-    // Gestion de la gravité
+    const onDungeonCompleteHandler = () => {
+        setShowVictory(true);
+        setHero(null);
+        monsters.forEach(monster => {
+            monster.destroy();
+        })
+        setMonsters([]);
+        setDungeonData(null);
+        setTimeout(() => {
+            initializeDungeon();
+        }, 100);
+    }
+
     useEffect(() => {
-        if (!dungeonData?.dungeon || !hero) return;
+        monsters.forEach(monster => monster.startMoving());
 
-        const applyGravity = () => {
-            if (isJumping) return;
-
-            const newPosition = { ...position };
-            const cellBelow = newPosition.y + 1 < dungeonData.dungeon.length ? 
-                dungeonData.dungeon[newPosition.y + 1][newPosition.x] : null;
-
-            if (cellBelow && cellBelow !== 'WALL' && cellBelow !== 'GROUND_TOP' 
-                && cellBelow !== 'GROUND_FULL_1' && cellBelow !== 'GROUND_FULL_2' 
-                && cellBelow !== 'GROUND_FULL_3' && cellBelow !== 'GROUND_STONE_1' 
-                && cellBelow !== 'GROUND_STONE_2') {
-                setPosition(prev => ({ ...prev, y: prev.y + 1 }));
-            }
+        return () => {
+            monsters.forEach(monster => {
+                if (typeof monster.stopMoving === "function") {
+                    monster.stopMoving();
+                }
+            });
         };
-
-        const gravityInterval = setInterval(applyGravity, GRAVITY_SPEED);
-        return () => clearInterval(gravityInterval);
-    }, [position, dungeonData, hero, isJumping]);
-
-    // Gestion du saut
-    useEffect(() => {
-        if (!isJumping || !dungeonData?.dungeon) return;
-
-        const jumpInterval = setInterval(() => {
-            if (jumpHeight >= JUMP_MAX_HEIGHT) {
-                setIsJumping(false);
-                setJumpHeight(0);
-                return;
-            }
-
-            const newPosition = { ...position };
-            const cellAbove = newPosition.y - 1 >= 0 ? 
-                dungeonData.dungeon[newPosition.y - 1][newPosition.x] : null;
-
-            if (cellAbove && cellAbove !== 'WALL') {
-                setPosition(prev => ({ ...prev, y: prev.y - 1 }));
-                setJumpHeight(prev => prev + 1);
-            } else {
-                setIsJumping(false);
-                setJumpHeight(0);
-            }
-        }, 150); // Vitesse du saut
-
-        return () => clearInterval(jumpInterval);
-    }, [isJumping, jumpHeight, position, dungeonData]);
-
-    // Modification du gestionnaire de touches
-    useEffect(() => {
-        const handleKeyPress = (e) => {
-            if (!dungeonData?.dungeon || !hero) return;
-
-            const newPosition = { ...position };
-            switch (e.key.toLowerCase()) {
-                case 'arrowup':
-                case 'z':
-                    if (position.y > 0) newPosition.y--;
-                    setDirection('back');
-                    break;
-                case 'arrowdown':
-                case 's':
-                    if (position.y < dungeonData.dungeon.length - 1) newPosition.y++;
-                    setDirection('front');
-                    break;
-                case 'arrowleft':
-                case 'q':
-                    if (position.x > 0) newPosition.x--;
-                    setDirection('left');
-                    break;
-                case 'arrowright':
-                case 'd':
-                    if (position.x < dungeonData.dungeon[0].length - 1) newPosition.x++;
-                    setDirection('right');
-                    break;
-                case ' ': // Barre d'espace
-                    // Vérifier si le personnage est sur le sol
-                    const cellBelow = position.y + 1 < dungeonData.dungeon.length ? 
-                        dungeonData.dungeon[position.y + 1][position.x] : null;
-                    if (cellBelow === 'WALL' || cellBelow === 'GROUND_TOP' 
-                        || cellBelow === 'GROUND_FULL_1' || cellBelow === 'GROUND_FULL_2' 
-                        || cellBelow === 'GROUND_FULL_3' || cellBelow === 'GROUND_STONE_1' 
-                        || cellBelow === 'GROUND_STONE_2') {
-                        setIsJumping(true);
-                        return;
-                    }
-                    break;
-                default:
-                    return;
-            }
-
-            // Vérifier si la nouvelle position est valide (pas un mur)
-            const nextCell = dungeonData.dungeon[newPosition.y][newPosition.x];
-            if (nextCell !== 'WALL') {
-                setPosition(newPosition);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyPress);
-        return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [position, dungeonData, hero, isJumping]);
+    }, [monsters]);
 
     const renderBackgroundLayers = () => {
         if (!dungeonData?.background?.layers) return null;
@@ -204,16 +216,50 @@ function DungeonPage() {
     return (
         <>
             <Header gaming={true} />
+            {showWelcome && (
+                <div className="welcome-popup">
+                    <div className="welcome-content">
+                        <h2>Bienvenue au DungeonGame</h2>
+                        <p>Combattez les monstres pour arriver au trésor. Bonne chance !</p>
+                        <div className="countdown">
+                            {countdown > 0 ? countdown : countdown === 0 ? "GO !!!" : ""}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showVictory && (
+                <>
+                    <div className="victory-popup">
+                        <ReactConfetti
+                            width={window.innerWidth}
+                            height={window.innerHeight}
+                            recycle={true}
+                            numberOfPieces={200}
+                            style={{ position: 'fixed', top: 0, left: 0, zIndex: 1000 }}
+                        />
+                        {/* <div className="victory-content">
+                            <div className="treasure-icon">🏆</div>
+                            <h2>Vous avez gagné la partie !</h2>
+                            <button onClick={() => navigate('/hero')}>
+                                Retour au menu
+                            </button>
+                        </div> */}
+                    </div>
+                </>
+            )}
+
             <div className="main-container">
-                {dungeonData && (
+                {dungeonData && hero && monsters && (
                     <>
                         {renderBackgroundLayers()}
-                        <DungeonCanva 
-                            dungeonData={dungeonData} 
+                        <DungeonCanva
+                            dungeonData={dungeonData}
                             imageCache={imageCache}
                             hero={hero}
-                            position={position}
-                            direction={direction}
+                            monsters={monsters}
+                            isSolidBlock={isSolidBlock}
+                            username={user.username}
                         />
                     </>
                 )}
@@ -224,7 +270,7 @@ function DungeonPage() {
                     <h1>Donjon</h1>
                     {hero && (
                         <div className="hero-stats">
-                            <p>Niveau: {hero.level} | PV: {hero.healthPoints} | ATK: {hero.attack}</p>
+                            <p>Niveau: {hero.level} | PV: {hero.pv} | ATK: {hero.attack}</p>
                         </div>
                     )}
                     <p>Utilisez les flèches du clavier ou ZQSD pour vous déplacer, et ESPACE pour sauter</p>
