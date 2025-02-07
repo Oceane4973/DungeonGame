@@ -5,11 +5,9 @@ export default class Hero extends Character {
         super(healthPoints, level, attack, x, y, direction, spriteUrls, dungeonData, isSolidBlock, onDungeonComplete);
         this.isJumping = false;
         this.jumpHeight = 2;
-
         this.isHero = true;
-
+        this.isDead = false;
         this.onDungeonComplete = onDungeonComplete;
-
         this.bindControls();
         this.wantToMoveInCell(this.position.x, this.position.y+1);
     }

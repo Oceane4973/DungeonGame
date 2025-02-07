@@ -1,11 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
+import './dungeonCanva.css';
 
 import Character from '../../models/Character';
 import { fightService } from '../../services/fightService';
 
-const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, username }) => {
+const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, username, onGameOver }) => {
     const canvasRef = useRef(null);
     const cellSize = 100;
+    const lastAttackTimeRef = useRef({});
 
     useEffect(() => {
         window.forceRedraw = () => {
@@ -63,20 +65,26 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
     };
 
     const checkCollision = (hero, monsters) => {
+        const currentTime = Date.now();
+        const cooldown = 3000;
+
         monsters.forEach(async monster => {
+            if (!monster.id) return;
+
             if (hero.position.x === monster.position.x && hero.position.y === monster.position.y) {
-                console.log(`💥 Collision détectée avec un monstre à (${hero.position.x}, ${hero.position.y}) !`);
+                if (!lastAttackTimeRef.current[monster.id] || currentTime - lastAttackTimeRef.current[monster.id] >= cooldown) {
+                    hero.pv = Math.max(0, hero.pv - monster.attack);
+                    lastAttackTimeRef.current[monster.id] = currentTime;
 
-                console.log(username);
-                const resultat = await fetchFight(hero, monster, username);
-                console.log(`GAGNANT  : ${resultat.winner}`);
-                
-                /*hero.pv -= monster.attack;
-                console.log(`PV du héros : ${hero.pv}`);
+                    if (hero.pv <= 0) {
+                        hero.isDead = true;
+                        setTimeout(() => {
+                            onGameOver(); // Appeler la fonction du parent
+                        }, 500);
+                    }
 
-                if (hero.pv <= 0) {
-                    console.log("💀 Le héros est mort !");
-                }*/
+                    const resultat = await fetchFight(hero, monster, username);
+                }
             }
         });
     };
@@ -90,7 +98,16 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
 
         ctx.save();
 
-        if (character.direction === 'left') {
+        if (character.isHero && character.isDead) {
+            // Animation de chute et rotation
+            ctx.translate(x + cellSize/2, y + cellSize/2);
+            ctx.rotate(Math.PI/2); // Rotation de 90 degrés
+            ctx.translate(-cellSize/2, -cellSize/2);
+            ctx.globalAlpha = 0.7; // Légère transparence
+            
+            // Décaler le héros vers le bas pour qu'il soit sur le sol
+            ctx.drawImage(sprite, 0, cellSize/2, cellSize, cellSize);
+        } else if (character.direction === 'left') {
             ctx.translate(x + cellSize, y);
             ctx.scale(-1, 1);
             ctx.drawImage(sprite, 0, 0, cellSize, cellSize);
@@ -100,7 +117,10 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
 
         ctx.restore();
 
-        drawHealthBar(ctx, character, x, y - 10);
+        // Ne pas dessiner la barre de vie si le héros est mort
+        if (!(character.isHero && character.isDead)) {
+            drawHealthBar(ctx, character, x, y - 10);
+        }
     };
 
     const drawHealthBar = (ctx, character, x, y) => {
@@ -124,13 +144,14 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
         ctx.strokeRect(barX, barY, barWidth, barHeight);
     };
 
-
     return (
-        <canvas
-            ref={canvasRef}
-            className="dungeon-canvas"
-            style={{ imageRendering: 'pixelated', maxWidth: '100%', maxHeight: '70vh' }}
-        />
+        <div style={{ position: 'relative' }}>
+            <canvas
+                ref={canvasRef}
+                className="dungeon-canvas"
+                style={{ imageRendering: 'pixelated', maxWidth: '100%', maxHeight: '70vh' }}
+            />
+        </div>
     );
 };
 

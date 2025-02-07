@@ -26,6 +26,7 @@ function DungeonPage() {
     const [showWelcome, setShowWelcome] = useState(true);
     const [countdown, setCountdown] = useState(3);
     const [showVictory, setShowVictory] = useState(false);
+    const [showGameOver, setShowGameOver] = useState(false);
 
     // Faudrait le mettre dans un component => KerrianBOY a la giga flemme
     const isSolidBlock = (cell) => {
@@ -106,11 +107,12 @@ function DungeonPage() {
     const fetchMonsters = async (dungeon) => {
         try {
             const monstersData = await monsterService.getMonster();
-            return monstersData.map(monster => new Monster(
+            return monstersData.map((monster, index) => new Monster(
                 monster.pv, monster.level, monster.attack,
                 Math.floor(Math.random() * 10), Math.floor(Math.random() * 5),
                 'right', [monster.sprites[0]],
-                dungeon, isSolidBlock
+                dungeon, isSolidBlock,
+                `monster-${index}`
             ));
         } catch (error) {
             console.error('Erreur lors de la récupération des monstres:', error);
@@ -213,6 +215,16 @@ function DungeonPage() {
         ));
     };
 
+    const handleRetry = () => {
+        console.log("Retry clicked!");
+        window.location.reload();
+    };
+
+    const handleQuit = () => {
+        console.log("Quit clicked!");
+        window.location.href = '/hero';
+    };
+
     return (
         <>
             <Header gaming={true} />
@@ -260,6 +272,7 @@ function DungeonPage() {
                             monsters={monsters}
                             isSolidBlock={isSolidBlock}
                             username={user.username}
+                            onGameOver={() => setShowGameOver(true)}
                         />
                     </>
                 )}
@@ -276,6 +289,32 @@ function DungeonPage() {
                     <p>Utilisez les flèches du clavier ou ZQSD pour vous déplacer, et ESPACE pour sauter</p>
                 </div>
             </div>
+
+            {showGameOver && (
+                <div className="game-over-overlay">
+                    <div className="game-over-popup">
+                        <h1 className="game-over-title">Game Over</h1>
+                        <p>Votre héros est mort au combat !</p>
+                        <div className="game-over-buttons">
+                            <button 
+                                className="game-over-button retry-button" 
+                                onClick={handleRetry}
+                                type="button"
+                            >
+                                Rejouer
+                            </button>
+                            <button 
+                                className="game-over-button quit-button" 
+                                onClick={handleQuit}
+                                type="button"
+                            >
+                                Quitter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <Footer />
         </>
     );

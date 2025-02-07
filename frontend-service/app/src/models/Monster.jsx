@@ -1,11 +1,12 @@
 import Character from './Character';
 
 export default class Monster extends Character {
-    constructor(healthPoints, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock) {
+    constructor(healthPoints, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock, id) {
         super(healthPoints, level, attack, x, y, direction, spriteUrls, dungeonData, isSolidBlock);
         this.moveInterval = null;
 
         this.isHero = false;
+        this.id = id;
 
         this.moveTo(this.position.x, this.position.y+1);
     }
