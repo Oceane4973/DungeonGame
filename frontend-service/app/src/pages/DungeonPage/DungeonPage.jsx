@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import { WebSocketContext } from '../../contexts/WebSocketContext';
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/Footer";
 import { dungeonService } from "../../services/dungeonService";
-import { heroeService } from "../../services/heroeService";
+import { heroService } from "../../services/heroService";
 import DungeonCanva from "../../components/dungeonCanva/dungeonCanva";
 import { monsterService } from "../../services/monsterService";
 import ReactConfetti from 'react-confetti';
@@ -13,6 +14,8 @@ import Hero from "../../models/Hero";
 import './DungeonPage.css';
 
 function DungeonPage() {
+    const { heroesHealth } = useContext(WebSocketContext);
+
     const { logout, user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -137,11 +140,9 @@ function DungeonPage() {
             return;
         }
         try {
-            const heroData = await heroeService.getHeroById(heroId);
+            const heroData = await heroService.getHeroById(heroId);
             heroData.position = getDungeonStart(dungeon);
-            return new Hero(
-                heroData.Id,
-                heroData.healthPoints, heroData.level, heroData.attack,
+            return new Hero(heroData.id, heroData.healthPoints, heroData.level, heroData.attack,
                 heroData.position.x, heroData.position.y,
                 'right', [heroData.sprites.right[0]],
                 dungeon, isSolidBlock, onDungeonCompleteHandler);
@@ -164,6 +165,17 @@ function DungeonPage() {
     useEffect(() => {
         initializeDungeon();
     }, []);
+
+    useEffect(() => {
+        if (heroesHealth) {
+            setHero((prevHero) => {
+                if (!prevHero) return null;
+
+                prevHero.pv = parseInt(heroesHealth, 10);
+                return { ...prevHero };
+            });
+        }
+    }, [heroesHealth]);
 
     useEffect(() => {
         if (showWelcome && countdown >= 0) {
@@ -298,15 +310,15 @@ function DungeonPage() {
                         <h1 className="game-over-title">Game Over</h1>
                         <p>Votre héros est mort au combat !</p>
                         <div className="game-over-buttons">
-                            <button 
-                                className="game-over-button retry-button" 
+                            <button
+                                className="game-over-button retry-button"
                                 onClick={handleRetry}
                                 type="button"
                             >
                                 Rejouer
                             </button>
-                            <button 
-                                className="game-over-button quit-button" 
+                            <button
+                                className="game-over-button quit-button"
                                 onClick={handleQuit}
                                 type="button"
                             >

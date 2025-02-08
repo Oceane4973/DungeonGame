@@ -1,6 +1,7 @@
 package com.dungeongame.monsters.services;
 
 import com.dungeongame.monsters.dto.MonsterDTO;
+import com.dungeongame.monsters.dto.SpriteDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,13 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class MonsterService {
+
+    @Value("${MONSTERS_HOST}")
+    private String monstersHost;
 
     @Value("${monsters.assets.path}")
     private String assetsPath;
@@ -29,6 +34,19 @@ public class MonsterService {
             monsters = objectMapper.readValue(jsonFile,
                     new TypeReference<Map<String, MonsterDTO>>() {
                     });
+
+            monsters.values().forEach(monster -> {
+                List<SpriteDTO> updatedSprites = monster.getSprites().stream()
+                        .map(sprite -> {
+                            SpriteDTO spriteDTO = new SpriteDTO();
+                            spriteDTO.setName(sprite.getName());
+                            spriteDTO.setImagePath(sprite.getImagePath());
+                            spriteDTO.setUrl(monstersHost + sprite.getUrl());
+                            return spriteDTO;
+                        })
+                        .collect(Collectors.toList());
+                monster.setSprites(updatedSprites);
+            });
         } catch (Exception e) {
             throw new RuntimeException("Error loading monsters configuration", e);
         }

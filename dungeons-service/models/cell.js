@@ -1,6 +1,6 @@
 
-const API_PORT = process.env.SERVICE_DUNGEON_PORT || 3000;
-const API_URL = `http://${process.env.SERVICE_DUNGEON_HOST || "localhost" }`;
+const API_PORT = process.env.SERVICE_DUNGEONS_PORT || 3000;
+const API_URL = `http://${process.env.SERVICE_DUNGEONS_HOST || "localhost" }`;
 
 const BASE_URL = `${API_URL}:${API_PORT}/api/images/cells`;
 

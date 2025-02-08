@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8083/api/heroes';
+const API_URL = `${process.env.REACT_APP_HEROES_SERVICE_URL}/api/heroes`;
 
 export const heroService = {
     getHeads: async () => {
@@ -34,7 +34,7 @@ export const heroService = {
 
     getHeroes: async (userId) => {
         const token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : null;
-        
+
         if (!token) {
             throw new Error('Non authentifié');
         }
@@ -44,7 +44,7 @@ export const heroService = {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des héros');
         }
@@ -53,7 +53,7 @@ export const heroService = {
 
     getHeroById: async (heroId) => {
         const token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : null;
-        
+
         if (!token) {
             throw new Error('Non authentifié');
         }
@@ -63,7 +63,7 @@ export const heroService = {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération du héros');
         }

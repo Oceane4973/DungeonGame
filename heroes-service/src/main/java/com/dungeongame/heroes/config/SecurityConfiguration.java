@@ -12,7 +12,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
         registry.addMapping("/api/**")
                 .allowedOrigins("http://localhost:8080")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
+                .allowedHeaders("Authorization", "Content-Type", "Origin", "Accept", "X-Requested-With")
                 .allowCredentials(true)
                 .maxAge(3600);
     }

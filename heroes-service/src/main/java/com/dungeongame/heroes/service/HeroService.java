@@ -1,6 +1,8 @@
 package com.dungeongame.heroes.service;
 
+import com.dungeongame.heroes.dto.QueueHealthHero;
 import com.dungeongame.heroes.model.*;
+import com.dungeongame.heroes.queue.Sender;
 import com.dungeongame.heroes.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,9 @@ import java.util.ArrayList;
 public class HeroService {
 
     private final ServerConfig serverConfig;
+
+    @Autowired
+    private Sender sender;
 
     @Autowired
     private HeroRepository heroRepository;
@@ -142,5 +147,14 @@ public class HeroService {
                 throw new RuntimeException("Error processing sprite", e);
             }
         }
+    }
+
+    public void updateHealthHero(QueueHealthHero queueHealthHero) {
+        heroRepository.findById(queueHealthHero.getHeroId()).ifPresent(hero -> {
+            hero.setHealthPoints(queueHealthHero.getHeroHealth());
+            heroRepository.save(hero);
+
+            sender.sendQueueHeroesToFrontendHealth(hero.getHealthPoints());
+        });
     }
 }
