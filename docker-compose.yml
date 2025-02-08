@@ -163,6 +163,9 @@ services:
   dungeon-game-rabbitmq-service:
     image: rabbitmq:3.9-management
     container_name: dungeon-game-rabbitmq-service
+    environment:
+      RABBITMQ_DEFAULT_USER: ${SPRING_RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${SPRING_RABBITMQ_PASSWORD}
     ports:
       - '${SPRING_RABBITMQ_SEND_PORT}:5672'
       - '${SPRING_RABBITMQ_VIEW_PORT}:15672'

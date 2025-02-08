@@ -1,7 +1,12 @@
 # Dungeons service - API Documentation
 
 ## Introduction
-Cette API permet de générer des **donjons aléatoires** avec des **matrices de cellules** préalablement crée et stockés, des **backgrounds dynamiques**, et des **assets**.  
+
+Cette API permet de générer des **donjons aléatoires** avec :
+- Des **matrices de cellules** préalablement créées et stockées
+- Des **backgrounds dynamiques**
+- Des **assets**  
+
 Elle expose différentes routes pour récupérer les **images**, **les matrices**, et **les backgrounds**.  
 
 ---

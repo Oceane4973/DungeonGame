@@ -1,24 +1,8 @@
-# Service Users
+# Users service - API Documentation
 
-Ce service permet de gérer la connexion utilisateur au jeu de donjon.
+## Introduction
 
-## Installation
-
-Pour installer ce projet, suivre ces étapes :
-- Copier le fichier `src/main/resources/application.example.properties`
-- Le coller en tant que `src/main/resources/application.example.properties`
-- Remplacer les variables d'environnement par les valeurs de production
-    - `{{DB_HOST}}` : L'hôte qui héberge la base de données
-    - `{{DB_PORT}}` : Le port de la base de données
-    - `{{DB_NAME}}` : Le nom de la base de données utilisée
-    - `{{DB_USERNAME}}` : L'utilisateur qui se connecte à la base de données
-    - `{{DB_PASSWORD}}` : Le mot de l'utilisateur
-    - `{{SECRET_KEY}}` : Le secret utilisé pour générer les JWT
-    - `{{TIME_EXPIRATION}}` : La durée de validité du token
-
-> Génération du secret
-> 
-> Pour générer le secret, vous pouvez utiliser la commande `openssl rand -base64 32`.
+Cette API permet de gérer le service utilisateurs.
 
 ## Routes
 
@@ -50,9 +34,3 @@ Ce service propose les routes suivantes :
     - `Authorization` : `Bearer Token`
   - *Réponse*
     - **200** : Les informations de l'utilisateur sont renvoyées
-
----
-
-#### Liens utiles
-
-- [Implémenter JWT dans application Spring boot - medium.com](https://medium.com/@tericcabrel/implement-jwt-authentication-in-a-spring-boot-3-application-5839e4fd8fac)
