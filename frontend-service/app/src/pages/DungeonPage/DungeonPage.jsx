@@ -139,7 +139,9 @@ function DungeonPage() {
         try {
             const heroData = await heroeService.getHeroById(heroId);
             heroData.position = getDungeonStart(dungeon);
-            return new Hero(heroData.healthPoints, heroData.level, heroData.attack,
+            return new Hero(
+                heroData.Id,
+                heroData.healthPoints, heroData.level, heroData.attack,
                 heroData.position.x, heroData.position.y,
                 'right', [heroData.sprites.right[0]],
                 dungeon, isSolidBlock, onDungeonCompleteHandler);

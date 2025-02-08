@@ -73,7 +73,8 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
 
             if (hero.position.x === monster.position.x && hero.position.y === monster.position.y) {
                 if (!lastAttackTimeRef.current[monster.id] || currentTime - lastAttackTimeRef.current[monster.id] >= cooldown) {
-                    hero.pv = Math.max(0, hero.pv - monster.attack);
+                    
+                    /*hero.pv = Math.max(0, hero.pv - monster.attack);
                     lastAttackTimeRef.current[monster.id] = currentTime;
 
                     if (hero.pv <= 0) {
@@ -81,9 +82,18 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
                         setTimeout(() => {
                             onGameOver(); // Appeler la fonction du parent
                         }, 500);
-                    }
+                    }*/
 
                     const resultat = await fetchFight(hero, monster, username);
+                    console.log(resultat);
+                    hero.pv = resultat.heroHealth;
+
+                    if (hero.pv <= 0) {
+                        hero.isDead = true;
+                        setTimeout(() => {
+                            onGameOver();
+                        }, 500);
+                    }
                 }
             }
         });

@@ -1,6 +1,7 @@
 package com.dungeongame.fight.dtos;
 
 public class FightBody {
+    private Integer heroId;
     private int monsterHealth;
     private int monsterAttack;
     private int monsterLevel;
@@ -10,6 +11,10 @@ public class FightBody {
     private int heroLevel;
 
     private String username;
+
+    public Integer getHeroId(){
+        return heroId;
+    }
 
     public int getMonsterHealth() {
         return monsterHealth;
