@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8084/api';
+const API_URL = `${process.env.REACT_APP_DUNGEONS_SERVICE_URL}/api`;
 
 export const dungeonService = {
     getDungeon: async () => {

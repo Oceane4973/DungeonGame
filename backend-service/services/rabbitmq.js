@@ -27,6 +27,7 @@ async function connectRabbitMQ(io) {
         }
     } catch (error) {
         console.error("Erreur RabbitMQ:", error);
+        setTimeout(() => connectRabbitMQ(io), 5000);
     }
 }
 

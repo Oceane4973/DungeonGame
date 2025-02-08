@@ -10,11 +10,12 @@ public class Sender {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public String sendQueueHeroesToFrontendHealth(String heroHealth) {
+    public void sendQueueHeroesToFrontendHealth(Integer heroHealth) {
         rabbitTemplate.convertAndSend(
                 "rabbitmq-heroes-exchange",
                 "heroes.to.frontend.health",
                 heroHealth);
-        return " [x] Sent " + heroHealth + " health to frontend";
+
+        System.out.println(" [x] Sent " + heroHealth + " health to frontend");
     }
 }

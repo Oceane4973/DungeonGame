@@ -13,11 +13,11 @@ public class Sender {
     @Autowired
     private Queue queueUsersToFrontendGold;
 
-    public String sendQueueUsersToFrontendGold(String userGold) {
+    public void sendQueueUsersToFrontendGold(String userGold) {
         rabbitTemplate.convertAndSend(
                 "rabbitmq-users-exchange",
                 "users.to.frontend.gold",
                 userGold);
-        return " [x] Sent " + userGold + " gold to frontend";
+        System.out.println("[x] Sent " + userGold + " gold to frontend");
     }
 }

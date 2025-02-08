@@ -33,11 +33,12 @@ services:
     image: node:23-bullseye
     container_name: dungeon-game-frontend-service
     environment:
-      - REACT_APP_BACKEND_SOCKET_URL=http://localhost:${SERVICE_BACKEND_PORT}
+      - REACT_APP_BACKEND_SOCKET_URL=ws://localhost:${SERVICE_BACKEND_PORT}
       - REACT_APP_USERS_SERVICE_URL=http://localhost:${SERVICE_USERS_PORT}
       - REACT_APP_FIGHTS_SERVICE_URL=http://localhost:${SERVICE_FIGHTS_PORT}
       - REACT_APP_HEROES_SERVICE_URL=http://localhost:${SERVICE_HEROES_PORT}
       - REACT_APP_DUNGEONS_SERVICE_URL=http://localhost:${SERVICE_DUNGEONS_PORT}
+      - REACT_APP_MONSTERS_SERVICE_URL=http://localhost:${SERVICE_MONSTERS_PORT}
     ports:
        - "${SERVICE_FRONTEND_PORT}:3000"
     volumes:
@@ -52,7 +53,7 @@ services:
     image: node:23-bullseye
     container_name: dungeon-game-backend-service
     environment:
-      - PORT=3000
+      - FRONTEND_HOST=localhost:${SERVICE_FRONTEND_PORT}
       - RABBITMQ_HOST=dungeon-game-rabbitmq-service
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=${SPRING_RABBITMQ_USERNAME}
@@ -147,6 +148,17 @@ services:
     networks:
       - dungeon-game-network
     restart: always
+
+  dungeon-game-monsters-service:
+    build:
+      context: ./monsters-service
+    container_name: dungeon-game-monsters-service
+    environment:
+      - MONSTERS_HOST=http://localhost:${SERVICE_MONSTERS_PORT}
+    ports:
+      - "${SERVICE_MONSTERS_PORT}:8080"
+    networks:
+      - dungeon-game-network
 
   dungeon-game-rabbitmq-service:
     image: rabbitmq:3.9-management

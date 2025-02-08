@@ -1,9 +1,10 @@
 import Character from './Character';
 
 export default class Hero extends Character {
-    constructor(heroId, healthPoints, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock, onDungeonComplete) {
+    constructor(id, healthPoints, level, attack, x, y, direction, spriteUrls = [], dungeonData, isSolidBlock, onDungeonComplete) {
         super(healthPoints, level, attack, x, y, direction, spriteUrls, dungeonData, isSolidBlock, onDungeonComplete);
-        this.heroId = heroId;
+        this.id = id
+
         this.isJumping = false;
         this.jumpHeight = 2;
         this.isHero = true;

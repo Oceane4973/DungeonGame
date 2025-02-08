@@ -20,7 +20,7 @@ function HeroPage() {
     useEffect(() => {
         const fetchHeroes = async () => {
             try {
-                const heroesData = await heroeService.getHeroes(user.id);
+                const heroesData = await heroService.getHeroes(user.id);
                 setHeroes(heroesData);
             } catch (err) {
                 setError(err.message);

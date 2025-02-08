@@ -1,9 +1,9 @@
-const API_URL = 'http://localhost:8082/api';
+const API_URL = `${process.env.REACT_APP_FIGHTS_SERVICE_URL}/api`;
 
 export const fightService = {
     getFightResult: async (hero, monster, username) => {
         try {
-            const response = await fetch(`${API_URL}/fight/`, {
+            const response = await fetch(`${API_URL}/fights`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -16,6 +16,7 @@ export const fightService = {
                     heroHealth: hero.pv,
                     heroAttack: hero.attack,
                     heroLevel: hero.level,
+                    heroId: hero.id,
                     username: username
                 }),
             });

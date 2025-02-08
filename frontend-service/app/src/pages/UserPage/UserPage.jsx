@@ -9,7 +9,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { ThemeContext, useTheme } from '../../contexts/ThemeContext';
 import { FaSun, FaMoon } from "react-icons/fa";
-import { heroeService } from '../../services/heroeService';
+import { heroService } from '../../services/heroService';
 
 const UserPage = () => {
   const [user, setUser] = useState(null);
@@ -29,8 +29,8 @@ const UserPage = () => {
         let myuser = userData;
         myuser.gold = 3;
         setUser(myuser);
-        
-        const heroesData = await heroeService.getHeroes(userData.id);
+
+        const heroesData = await heroService.getHeroes(userData.id);
         console.log("Heroes data:", heroesData);
         setHeroes(heroesData);
       } catch (err) {
@@ -134,9 +134,9 @@ const UserPage = () => {
             <div className="preferences-content">
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                 <span style={{ fontSize: '16px', fontWeight: '500' }}>Thème :</span>
-                <button 
+                <button
                   onClick={toggleTheme}
-                  style={{ 
+                  style={{
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
@@ -146,8 +146,8 @@ const UserPage = () => {
                     justifyContent: 'center'
                   }}
                 >
-                  {theme === 'dark' ? 
-                    <FaSun size={24} color="#FFB800" /> : 
+                  {theme === 'dark' ?
+                    <FaSun size={24} color="#FFB800" /> :
                     <FaMoon size={24} color="#4A4A4A" />
                   }
                 </button>
@@ -155,14 +155,14 @@ const UserPage = () => {
             </div>
           </div>
 
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
             marginTop: 'auto',
             paddingTop: '20px'
           }}>
-            <button 
-              onClick={handleLogout} 
+            <button
+              onClick={handleLogout}
               className="logout-btn"
               style={{
                 backgroundColor: '#F8F9FC',
@@ -191,15 +191,15 @@ const UserPage = () => {
               <h2 className="section-title">Mes Héros</h2>
               <div className="sprites-grid">
                 {heroes && heroes.map(hero => (
-                  <div 
-                    key={hero.id} 
-                    className="hero-sprite-container" 
+                  <div
+                    key={hero.id}
+                    className="hero-sprite-container"
                     onMouseEnter={() => setHoveredHero(hero)}
                     onMouseLeave={() => setHoveredHero(null)}
                     style={{ position: 'relative', width: '48px', height: '48px', cursor: 'pointer' }}
                   >
                     {hero.bodySprite && (
-                      <img 
+                      <img
                         src={hero.bodySprite.url}
                         alt="Body Sprite"
                         style={{
@@ -212,8 +212,8 @@ const UserPage = () => {
                       />
                     )}
                     {hero.headSprite && (
-                      <img 
-                        src={hero.headSprite.url} 
+                      <img
+                        src={hero.headSprite.url}
                         alt="Head Sprite"
                         style={{
                           position: 'absolute',
@@ -248,7 +248,7 @@ const UserPage = () => {
             <div className="popup-header">
               <div className="popup-sprites">
                 {selectedHero.bodySprite && (
-                  <img 
+                  <img
                     src={selectedHero.bodySprite.url}
                     alt="Body Sprite"
                     style={{
@@ -261,7 +261,7 @@ const UserPage = () => {
                   />
                 )}
                 {selectedHero.headSprite && (
-                  <img 
+                  <img
                     src={selectedHero.headSprite.url}
                     alt="Head Sprite"
                     style={{

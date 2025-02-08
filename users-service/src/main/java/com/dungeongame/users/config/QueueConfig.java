@@ -23,7 +23,12 @@ import java.util.Map;
 public class QueueConfig {
     @Bean
     public Queue queueUsersToFrontendGold() {
-        return new Queue("rabbitmq-users-to-frontend-gold");
+        return new Queue("rabbitmq-users-to-frontend-gold", true);
+    }
+
+    @Bean
+    public Queue queueFightsToUsersHealth() {
+        return new Queue("rabbitmq-fights-to-users-gold", true);
     }
 
     @Bean

@@ -27,6 +27,11 @@ public class QueueConfig {
     }
 
     @Bean
+    public Queue queueFightsToHeroesHealth() {
+        return new Queue("rabbitmq-fights-to-heroes-health", true);
+    }
+
+    @Bean
     public Receiver receiver() {
         return new Receiver();
     }

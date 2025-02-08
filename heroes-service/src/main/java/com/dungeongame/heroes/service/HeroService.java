@@ -154,7 +154,7 @@ public class HeroService {
             hero.setHealthPoints(queueHealthHero.getHeroHealth());
             heroRepository.save(hero);
 
-            sender.sendQueueHeroesToFrontendHealth(String.valueOf(hero.getHealthPoints()));
+            sender.sendQueueHeroesToFrontendHealth(hero.getHealthPoints());
         });
     }
 }

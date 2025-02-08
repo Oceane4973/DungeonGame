@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class QueueConfig {
     @Bean
     public Queue queueFightsToUsersGold() {
-        return new Queue("rabbitmq-fights-to-user-gold", true);
+        return new Queue("rabbitmq-fights-to-users-gold", true);
     }
 
     @Bean

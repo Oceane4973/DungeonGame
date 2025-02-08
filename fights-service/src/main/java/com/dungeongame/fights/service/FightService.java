@@ -11,24 +11,18 @@ public class FightService {
     private final Random random = new Random();
 
     public FightResponse fight(FightBody fight) {
+        while (fight.getHeroHealth() > 0 && fight.getMonsterHealth() > 0) {
+            int heroDamage = fight.getHeroAttack() * fight.getHeroLevel();
+            int monsterDamage = fight.getMonsterAttack() * fight.getMonsterLevel();
 
-        while (fight.getHeroHealth() > 0 || fight.getMonsterHealth() > 0) {
-            int heroDamage = calculateDamage(fight.getHeroAttack(), fight.getHeroLevel());
-            int monsterDamage = calculateDamage(fight.getMonsterAttack(), fight.getMonsterLevel());
-
-            fight.setMonsterHealth(fight.getMonsterHealth() - heroDamage);
-            fight.setHeroHealth(fight.getHeroHealth() - monsterDamage);
+            fight.setMonsterHealth(Math.max(fight.getMonsterHealth() - heroDamage, 0));
+            fight.setHeroHealth(Math.max(fight.getHeroHealth() - monsterDamage, 0));
         }
 
-        if (fight.getMonsterHealth() <= fight.getHeroHealth()) {
-            return new FightResponse("hero", "monster", fight.getHeroHealth());
+        if (fight.getHeroHealth() == 0) {
+            return new FightResponse("monster", "hero");
         } else {
-            return new FightResponse("monster", "hero", fight.getHeroHealth());
+            return new FightResponse("hero", "monster");
         }
-    }
-
-    private int calculateDamage(int attack, int level) {
-        double randomMultiplier = 0.2 + (0.6 - 0.2) * random.nextDouble();
-        return (int) (attack * level * randomMultiplier);
     }
 }

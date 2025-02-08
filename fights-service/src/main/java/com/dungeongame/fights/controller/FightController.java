@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/fights")
+@RequestMapping("/api")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class FightController {
 
@@ -24,7 +24,7 @@ public class FightController {
     @Autowired
     private FightService fightService;
 
-    @PostMapping("/")
+    @PostMapping("/fights")
     public ResponseEntity<?> fight(@RequestBody FightBody fight) {
         try {
             FightResponse response = fightService.fight(fight);
