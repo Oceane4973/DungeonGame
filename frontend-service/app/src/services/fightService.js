@@ -9,7 +9,6 @@ export const fightService = {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    heroId : hero.heroId,
                     monsterHealth: monster.pv,
                     monsterAttack: monster.attack,
                     monsterLevel: monster.level,

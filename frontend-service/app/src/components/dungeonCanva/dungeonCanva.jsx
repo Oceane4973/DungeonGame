@@ -29,6 +29,15 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
         }
     }, [dungeonData, imageCache]);
 
+    useEffect(() => {
+        if (hero.pv <= 0) {
+            hero.isDead = true;
+            setTimeout(() => {
+                onGameOver();
+            }, 500);
+        }
+    }, [hero]);
+
     const drawDungeon = () => {
         const canvas = canvasRef.current;
         if (!canvas || !dungeonData) return;
@@ -73,22 +82,8 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
 
             if (hero.position.x === monster.position.x && hero.position.y === monster.position.y) {
                 if (!lastAttackTimeRef.current[monster.id] || currentTime - lastAttackTimeRef.current[monster.id] >= cooldown) {
-                    
-                    /*hero.pv = Math.max(0, hero.pv - monster.attack);
-                    lastAttackTimeRef.current[monster.id] = currentTime;
-
-                    if (hero.pv <= 0) {
-                        hero.isDead = true;
-                        setTimeout(() => {
-                            onGameOver(); // Appeler la fonction du parent
-                        }, 500);
-                    }*/
-
-                    const resultat = await fetchFight(hero, monster, username);
-                    console.log(resultat);
-                    hero.pv = resultat.heroHealth;
-
-                    if (hero.pv <= 0) {
+                    const result = await fetchFight(hero, monster, username);
+                    if (result.winner === "monster") {
                         hero.isDead = true;
                         setTimeout(() => {
                             onGameOver();
@@ -114,7 +109,7 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
             ctx.rotate(Math.PI/2); // Rotation de 90 degrés
             ctx.translate(-cellSize/2, -cellSize/2);
             ctx.globalAlpha = 0.7; // Légère transparence
-            
+
             // Décaler le héros vers le bas pour qu'il soit sur le sol
             ctx.drawImage(sprite, 0, cellSize/2, cellSize, cellSize);
         } else if (character.direction === 'left') {

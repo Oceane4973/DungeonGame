@@ -171,9 +171,7 @@ function DungeonPage() {
             setHero((prevHero) => {
                 if (!prevHero) return null;
 
-                console.log("Santé avant conversion:", typeof heroesHealth);
                 prevHero.pv = parseInt(heroesHealth, 10);
-                console.log("Santé après conversion:", prevHero.pv);
                 return { ...prevHero };
             });
         }

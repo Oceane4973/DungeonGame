@@ -2,7 +2,6 @@ package com.dungeongame.fights.queue;
 
 import com.dungeongame.fights.dto.QueueGold;
 import com.dungeongame.fights.dto.QueueHealthHero;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

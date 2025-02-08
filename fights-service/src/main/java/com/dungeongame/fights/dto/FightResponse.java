@@ -5,20 +5,13 @@ public class FightResponse {
 
     private String looser;
 
-    private Integer heroHealth;
-
-    public FightResponse(String winner, String looser, Integer heroHealth) {
+    public FightResponse(String winner, String looser) {
         this.winner = winner;
         this.looser = looser;
-        this.heroHealth = heroHealth;
     }
 
     public String getWinner() {
         return winner;
-    }
-
-    public Integer getHeroHealth(){
-        return heroHealth;
     }
 
     public String getLooser() {
