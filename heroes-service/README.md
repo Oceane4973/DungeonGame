@@ -261,6 +261,10 @@ curl -X GET "http://localhost:8081/api/images/hero/hero1-front-1-32x36.png"
 
 ## Configuration de PostgreSQL
 
+> ⚠ **Attention**  
+> Passez cette étape si vous êtes dans le cadre du projet **DungeonGame**.  
+> L'installation et le démarrage du service seront automatisés.
+
 ### 1. Installer PostgreSQL (si ce n'est pas déjà fait)
 
 Sur Ubuntu :
