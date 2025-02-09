@@ -13,6 +13,11 @@ Elle expose différentes routes pour récupérer les **images**, **les matrices*
 
 ## Installation et configuration
 
+> ⚠ **Attention**  
+> Passez cette étape si vous êtes dans le cadre du projet **DungeonGame**.  
+> L'installation et le démarrage du service seront automatisés.
+
+
 ### Installer les dépendances
 ```bash
 npm install
