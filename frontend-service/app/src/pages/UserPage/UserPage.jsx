@@ -12,7 +12,7 @@ import { FaSun, FaMoon } from "react-icons/fa";
 import { heroService } from '../../services/heroService';
 
 const UserPage = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useContext(AuthContext);
   const [heroes, setHeroes] = useState([]);
   const [error, setError] = useState(null);
   const [selectedHero, setSelectedHero] = useState(null);
@@ -25,12 +25,7 @@ const UserPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await UserService.getUserDetails();
-        let myuser = userData;
-        myuser.gold = 3;
-        setUser(myuser);
-
-        const heroesData = await heroService.getHeroes(userData.id);
+        const heroesData = await heroService.getHeroes(user.id);
         console.log("Heroes data:", heroesData);
         setHeroes(heroesData);
       } catch (err) {
