@@ -310,13 +310,13 @@ function DungeonPage() {
                         <h1 className="game-over-title">Game Over</h1>
                         <p>Votre héros est mort au combat !</p>
                         <div className="game-over-buttons">
-                            <button
+                            {/**<button
                                 className="game-over-button retry-button"
                                 onClick={handleRetry}
                                 type="button"
                             >
                                 Rejouer
-                            </button>
+                            </button>*/}
                             <button
                                 className="game-over-button quit-button"
                                 onClick={handleQuit}

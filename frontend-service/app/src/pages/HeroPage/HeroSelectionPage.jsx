@@ -108,8 +108,9 @@ function HeroPage() {
                                             <p className="hero-stats">❤️ Points de vie: <strong>{hero.healthPoints}</strong></p>
                                         </div>
                                         <button
-                                            className="select-hero-btn"
+                                            className={`select-hero-btn ${hero.healthPoints <= 0 ? "disabled" : ""}`}
                                             onClick={() => navigate(`/dungeon?heroId=${hero.id}`)}
+                                            disabled={hero.healthPoints <= 0}
                                         >
                                             Choisir ce héros
                                         </button>

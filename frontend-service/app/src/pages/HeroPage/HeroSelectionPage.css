@@ -366,3 +366,8 @@ body.dark .select-hero-btn:hover {
     color: #666;
     font-size: 1.2rem;
 }
+
+.select-hero-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
