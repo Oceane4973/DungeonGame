@@ -79,15 +79,20 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
 
         monsters.forEach(async monster => {
             if (!monster.id) return;
+            if (monster.isDead) return;
 
             if (hero.position.x === monster.position.x && hero.position.y === monster.position.y) {
                 if (!lastAttackTimeRef.current[monster.id] || currentTime - lastAttackTimeRef.current[monster.id] >= cooldown) {
                     const result = await fetchFight(hero, monster, username);
                     if (result.winner === "monster") {
                         hero.isDead = true;
+                        hero.pv = 0; //Juste pour le graphisme mais sinon se met a jour automatiquement en bdd avec rabbitmq
                         setTimeout(() => {
                             onGameOver();
                         }, 500);
+                    } else {
+                        monster.pv = 0;
+                        monster.isDead = true;
                     }
                 }
             }
@@ -103,15 +108,16 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
 
         ctx.save();
 
-        if (character.isHero && character.isDead) {
+        if (character.isDead) {
             // Animation de chute et rotation
-            ctx.translate(x + cellSize/2, y + cellSize/2);
-            ctx.rotate(Math.PI/2); // Rotation de 90 degrés
-            ctx.translate(-cellSize/2, -cellSize/2);
+            ctx.translate(x + cellSize / 2, y + cellSize / 2);
+            ctx.rotate(Math.PI / 2); // Rotation de 90 degrés
+            ctx.translate(-cellSize / 2, -cellSize / 2);
             ctx.globalAlpha = 0.7; // Légère transparence
 
             // Décaler le héros vers le bas pour qu'il soit sur le sol
-            ctx.drawImage(sprite, 0, cellSize/2, cellSize, cellSize);
+            ctx.drawImage(sprite, 0, cellSize / 2, cellSize, cellSize);
+
         } else if (character.direction === 'left') {
             ctx.translate(x + cellSize, y);
             ctx.scale(-1, 1);
@@ -122,8 +128,7 @@ const DungeonCanva = ({ dungeonData, imageCache, hero, monsters, isSolidBlock, u
 
         ctx.restore();
 
-        // Ne pas dessiner la barre de vie si le héros est mort
-        if (!(character.isHero && character.isDead)) {
+        if (!character.isDead) {
             drawHealthBar(ctx, character, x, y - 10);
         }
     };

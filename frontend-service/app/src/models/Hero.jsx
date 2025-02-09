@@ -8,7 +8,6 @@ export default class Hero extends Character {
         this.isJumping = false;
         this.jumpHeight = 2;
         this.isHero = true;
-        this.isDead = false;
         this.onDungeonComplete = onDungeonComplete;
         this.bindControls();
         this.wantToMoveInCell(this.position.x, this.position.y+1);
@@ -19,6 +18,8 @@ export default class Hero extends Character {
     }
 
     wantToMoveInCell(x, y) {
+        if (this.isDead) return; 
+        
         const cell = this.dungeonData.dungeon[y]?.[x];
         if (cell === 'END_DUNGEON') {
             console.log('Fin du donjon atteinte !');

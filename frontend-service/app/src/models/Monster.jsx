@@ -48,6 +48,7 @@ export default class Monster extends Character {
 
     moveTo(x, y) {
         if (
+            !this.isDead &&
             x >= 0 && y >= 0 && 
             y < this.dungeonData.dungeon.length && 
             x < this.dungeonData.dungeon[0].length &&

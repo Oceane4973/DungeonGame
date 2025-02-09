@@ -23,6 +23,8 @@ export default class Character {
         this.JUMP_FORCE = 0.5;
         this.DOUBLE_JUMP_FORCE = 0.5;
 
+        this.isDead = false;
+
         this.preloadSprites();
     }
 
